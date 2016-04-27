@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_myinfo"
+            android:title="내정보" />
+        <item
+            android:id="@+id/nav_archive"
+            android:title="도전과제" />
+        <item
+            android:id="@+id/nav_setting"
+            android:title="설정" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="로그아웃" />
+    </group>
+
+</menu>
