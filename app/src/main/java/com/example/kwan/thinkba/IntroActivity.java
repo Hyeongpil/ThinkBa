@@ -22,10 +22,10 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        // TODO Auto-generated method stub
+        // TODO 인트로 늘리기
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        myHandler.postDelayed(myRunnable, 2000);
+        myHandler.postDelayed(myRunnable, 500);
     }
 }

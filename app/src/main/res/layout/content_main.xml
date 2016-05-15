@@ -1,15 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.kwan.thinkba.MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/app_bar_main"
+    android:orientation="vertical">
 
-    <net.daum.mf.map.api.MapView
-        android:id="@+id/mapView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="450dp" />
-</RelativeLayout>
+        android:layout_height="450dp"
+        android:orientation="vertical">
+        <FrameLayout
+            android:id="@+id/mapLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="450dp">
+        </FrameLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/nowLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="현위치"
+                android:layout_gravity="right" />
+            <Button
+                android:id="@+id/tracking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="트래킹"
+                android:layout_gravity="right" />
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/mapMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="메뉴" />
+    </FrameLayout>
+
+</FrameLayout>

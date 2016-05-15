@@ -1,5 +1,9 @@
 package com.example.kwan.thinkba;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -7,34 +11,56 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.kwan.thinkba.Daum_map.GpsInfo;
-import com.example.kwan.thinkba.Daum_map.Item;
-
-import net.daum.mf.map.api.CameraUpdateFactory;
-import net.daum.mf.map.api.MapPOIItem;
-import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapPointBounds;
-import net.daum.mf.map.api.MapView;
+import com.skp.Tmap.TMapGpsManager;
+import com.skp.Tmap.TMapView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MapView.MapViewEventListener, MapView.POIItemEventListener {
-    private GpsInfo gps;
-    MapView mapView;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TMapGpsManager.onLocationChangedCallback {
+    final static String TAG = "MainActivity";
+    Context mContext;
+    TMapGpsManager gps = null;
+    GpsInfo gpsInfo;
+    FrameLayout mapLayout;
+    TMapView mapView;
+    Button nowLoationBtn;
+    Button mapMenuBtn;
+    Button trackingBtn;
+    double latitude; //위도
+    double longitude; // 경도
+
+    private boolean m_bTrackingMode = false;
+
+    private ListViewDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = this;
+        mapLayout = (FrameLayout)findViewById(R.id.mapLayout);
+        nowLoationBtn = (Button)findViewById(R.id.nowLocation);
+        nowLoationBtn.setOnClickListener(nowClickListner);
+        mapMenuBtn = (Button)findViewById(R.id.mapMenu);
+        mapMenuBtn.setOnClickListener(menuClickListner);
+        trackingBtn = (Button)findViewById(R.id.tracking);
+        trackingBtn.setOnClickListener(trackingClickListner);
         naviDrawerInit();
-        daumMapInit();
-        gps();
+        tMapGps();
+        tMapInit();
     }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -60,9 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_myinfo) {
         } else if (id == R.id.nav_archive) {
-
         } else if (id == R.id.nav_setting) {
-
         } else if (id == R.id.nav_logout) {
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -83,95 +107,107 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-    private void daumMapInit(){
-        mapView = (MapView)findViewById(R.id.mapView);
-        mapView.setDaumMapApiKey("965df1f1c4824c1f097710f996cc5de2");
-        mapView.setMapViewEventListener(this);
-        mapView.setPOIItemEventListener(this);
-    }
-    private void gps(){
-        gps = new GpsInfo(MainActivity.this);
-        if(gps.isGetLocation()){
-            double latitude = gps.getLatitude();
-            double longitude = gps.getLongitude();
-            moveCamera(latitude,longitude);
+
+    private void tMapInit(){
+        gpsInfo = new GpsInfo(MainActivity.this);
+        if(gpsInfo.isGetLocation()) {
+            latitude = gpsInfo.getLatitude();
+            longitude = gpsInfo.getLongitude();
         }
-        else{
-            gps.showSettingAlert();
+        mapView = new TMapView(this); // 지도 위도, 경도, 줌레벨
+        mapView.setSKPMapApiKey("d5c4630e-a1ac-3ddc-8417-03e1bf83e1b4");
+        mapView.setTrackingMode(m_bTrackingMode); // 트래킹 모드 사용
+        mapView.setZoomLevel(16);
+        mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
+        mapLayout.addView(mapView);
+    }
+
+    private void tMapGps(){
+        gps = new TMapGpsManager(MainActivity.this);
+        gps.setMinTime(1000);
+        gps.setMinDistance(5);
+        gps.setProvider(gps.NETWORK_PROVIDER);
+        gps.OpenGps();
+    }
+
+    @Override
+    public void onLocationChange(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        mapView.setLocationPoint(location.getLongitude(), location.getLatitude());
+        Log.e(TAG,"onLocationChange " + location.getLatitude() +  " " + location.getLongitude() + " " + location.getSpeed() + " " + location.getAccuracy());
+        if(m_bTrackingMode) {
+            mapView.setLocationPoint(location.getLongitude(), location.getLatitude());
         }
     }
+
+    Button.OnClickListener nowClickListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            gpsInfo = new GpsInfo(MainActivity.this);
+            if(gpsInfo.isGetLocation()) {
+                latitude = gpsInfo.getLatitude();
+                longitude = gpsInfo.getLongitude();
+                mapView.setLocationPoint(longitude,latitude);
+                mapView.setCenterPoint(longitude,latitude);
+//                Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.map_pin_red);
+//                mapView.setIcon(bitmap);
+            }else{
+                Toast.makeText(MainActivity.this, "GPS 연동 실패", Toast.LENGTH_SHORT).show();
+            }
+            Log.e(TAG,"longitude :"+longitude);
+            Log.e(TAG,"latitude :"+latitude);
+        }
+    };
+
+    Button.OnClickListener menuClickListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String[] item = getResources().getStringArray(R.array.list_dialog_list_item);
+            List<String> listItem = Arrays.asList(item);
+            ArrayList<String> itemArrayList = new ArrayList<String>(listItem);
+            mDialog = new ListViewDialog(mContext, getString(R.string.list_dialog_title), itemArrayList);
+            mDialog.onOnSetItemClickListener(new ListViewDialog.ListViewDialogSelectListener(){
+                @Override
+                public void onSetOnItemClickListener(int position) {
+                    if (position == 0){
+                        Log.v(TAG, " 첫번째 인덱스가 선택되었습니다" +
+                                "여기에 맞는 작업을 해준다.");
+                    }
+                    else if (position == 1){
+                        Log.v(TAG, " 두번째 인덱스가 선택되었습니다" +
+                                "여기에 맞는 작업을 해준다.");
+                    }
+                    else if(position == 2){
+                        Log.v(TAG, " 세번째 인덱스가 선택되었습니다" +
+                                "여기에 맞는 작업을 해준다.");
+                    }
+                    mDialog.dismiss();
+                }
+            });
+            mDialog.show();
+        }
+    };
+    Button.OnClickListener trackingClickListner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            setTrackingMode();
+        }
+    };
+
     /**
-     * 지도의 화면을 옮겨준다.
-     * **/
-    public void moveCamera(double latitude, double longitude){
-        MapPointBounds mapPointBounds = new MapPointBounds();
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(latitude,longitude);
-        MapPOIItem poiItem = new MapPOIItem();
-        poiItem.setMapPoint(mapPoint);
-        poiItem.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
-        poiItem.setCustomSelectedImageResourceId(R.drawable.map_pin_red);
-        poiItem.setCustomImageAutoscale(false);
-        poiItem.setCustomImageAnchor(0.5f, 1.0f);
-        mapPointBounds.add(mapPoint);
-        mapView.addPOIItem(poiItem);
-        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
+     * setTrackingMode
+     * 화면중심을 단말의 현재위치로 이동시켜주는 트래킹모드로 설정한다.
+     */
+    public void setTrackingMode() {
+        m_bTrackingMode = !m_bTrackingMode;
+        if(m_bTrackingMode){
+            Toast.makeText(MainActivity.this, "트래킹 켜짐", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(MainActivity.this, "트래킹 꺼짐", Toast.LENGTH_SHORT).show();
+        }
+        mapView.setTrackingMode(m_bTrackingMode);
     }
 
-    @Override
-    public void onMapViewInitialized(MapView mapView) {
 
-    }
-
-    @Override
-    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
-
-    }
-
-    @Override
-    public void onMapViewZoomLevelChanged(MapView mapView, int i) {
-
-    }
-
-    @Override
-    public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
-
-    }
-
-    @Override
-    public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
-
-    }
-
-    @Override
-    public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
-
-    }
-
-    @Override
-    public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
-    }
-
-    @Override
-    public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
-    }
-
-    @Override
-    public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
-    }
-
-    @Override
-    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
-    }
-
-    @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
-    }
-
-    @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
-    }
-
-    @Override
-    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
-    }
 }
