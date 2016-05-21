@@ -1,9 +1,11 @@
-package com.example.kwan.thinkba;
+package com.example.kwan.thinkba.Activity;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.kwan.thinkba.R;
 
 public class IntroActivity extends AppCompatActivity {
 

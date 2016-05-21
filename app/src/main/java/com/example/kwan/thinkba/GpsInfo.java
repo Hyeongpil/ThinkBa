@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Daum_map;
+package com.example.kwan.thinkba;
 
 import android.app.AlertDialog;
 import android.app.Service;
