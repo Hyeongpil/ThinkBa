@@ -21,7 +21,10 @@ import android.widget.Toast;
 import com.example.kwan.thinkba.GpsInfo;
 import com.example.kwan.thinkba.ListViewDialog;
 import com.example.kwan.thinkba.R;
+import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapGpsManager;
+import com.skp.Tmap.TMapPoint;
+import com.skp.Tmap.TMapPolyLine;
 import com.skp.Tmap.TMapView;
 
 import java.util.ArrayList;
@@ -34,16 +37,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Context mContext;
     TMapGpsManager gps = null;
     GpsInfo gpsInfo;
+    TMapPoint startPoint;
+    TMapPoint arrivePoint;
+
     FrameLayout mapLayout;
     TMapView mapView;
     Button nowLocationBtn;
     Button mapMenuBtn;
     Button trackingBtn;
+
     double latitude; //위도
     double longitude; // 경도
+    String arrive; // 도착지 좌표
 
     private boolean m_bTrackingMode = false;
-
     private ListViewDialog mDialog;
 
     @Override
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
+
         mapLayout = (FrameLayout)findViewById(R.id.mapLayout);
         nowLocationBtn = (Button)findViewById(R.id.nowLocation);
         nowLocationBtn.setOnClickListener(nowClickListener);
@@ -58,33 +66,67 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapMenuBtn.setOnClickListener(menuClickListener);
         trackingBtn = (Button)findViewById(R.id.tracking);
         trackingBtn.setOnClickListener(trackingClickListener);
+
+        getArriveInfo();
         naviDrawerInit();
         tMapGps();
         tMapInit();
+
     }
 
-    private void naviDrawerInit(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    /**
+     * getArriveInfo
+     * 길 찾기 에서 도착지를 받아온다
+     */
+    private void getArriveInfo(){
+        try {
+            Intent intent = getIntent();
+            arrive = intent.getStringExtra("arrivePoint");
+            String temp[] = arrive.split(" ");
+            Log.e(TAG, "arrive :"+arrive);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+            double latitude = Double.parseDouble(temp[1]);
+            double longitude = Double.parseDouble(temp[3]);
+            arrivePoint = new TMapPoint(latitude,longitude);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void tMapInit(){
         gpsInfo = new GpsInfo(MainActivity.this);
+        if(gpsInfo.isGetLocation()) { // 현재 위치 받아오기
+            latitude = gpsInfo.getLatitude();
+            longitude = gpsInfo.getLongitude();
+            startPoint = new TMapPoint(latitude,longitude);
+        }
         mapView = new TMapView(this); // 지도 위도, 경도, 줌레벨
         mapView.setSKPMapApiKey("d5c4630e-a1ac-3ddc-8417-03e1bf83e1b4");
         mapView.setTrackingMode(m_bTrackingMode); // 트래킹 모드 사용
         mapView.setZoomLevel(16);
+//        mapView.setBicycleInfo(true);//자전거 도로 표시
+        mapView.setBicycleFacilityInfo(true);//자전거 시설물 표시
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
+        mapView.setLocationPoint(longitude,latitude); // 지도 현재 좌표 설정
+        mapView.setCenterPoint(longitude,latitude); // 지도 현재 위치로
+        Log.e(TAG,"arrivePoint :"+arrivePoint);
+        if(arrivePoint != null){setPath();}
         mapLayout.addView(mapView);
+    }
+    /**
+     * setPath
+     * 도착지 정보가 있다면 맵에 경로를 그려준다
+     */
+    private void setPath() {
+        Log.e(TAG,"setPath 진입");
+        TMapData tmapdata = new TMapData();
+        //출발지와 도착지를 받아 자전거 경로를 그려줌
+        tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, arrivePoint, new TMapData.FindPathDataListenerCallback() {
+            @Override
+            public void onFindPathData(TMapPolyLine tMapPolyLine) {
+                mapView.addTMapPath(tMapPolyLine);
+            }
+        });
     }
 
     private void tMapGps(){
@@ -154,6 +196,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    private void naviDrawerInit(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+    /**
+     * nowClickListener
+     * 화면중심을 단말의 현재위치로 이동시켜준다.
+     */
     Button.OnClickListener nowClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -188,12 +247,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(intent);
                     }
                     else if (position == 1){
-                        Log.v(TAG, " 두번째 인덱스가 선택되었습니다" +
-                                "여기에 맞는 작업을 해준다.");
+                        Log.v(TAG, " 두번째 인덱스가 선택되었습니다");
                     }
                     else if(position == 2){
-                        Log.v(TAG, " 세번째 인덱스가 선택되었습니다" +
-                                "여기에 맞는 작업을 해준다.");
+                        Log.v(TAG, " 세번째 인덱스가 선택되었습니다");
                     }
                     mDialog.dismiss();
                 }
