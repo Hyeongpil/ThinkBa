@@ -51,7 +51,6 @@ public class PathActivity extends AppCompatActivity {
         mapLayout = (FrameLayout)findViewById(R.id.pathMapLayout);
         tv_pathInfo = (TextView)findViewById(R.id.pathInfo);
         startBtn = (Button)findViewById(R.id.start);
-        // TODO: 2016-05-21 안내 시작 클릭 리스너 구현하기
         startBtn.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {

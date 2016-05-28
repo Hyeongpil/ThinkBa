@@ -247,7 +247,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(intent);
                     }
                     else if (position == 1){
-                        Log.v(TAG, " 두번째 인덱스가 선택되었습니다");
+                        Intent intent = new Intent(MainActivity.this,NearbyActivity.class);
+                        startActivity(intent);
                     }
                     else if(position == 2){
                         Log.v(TAG, " 세번째 인덱스가 선택되었습니다");

@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 
 import com.example.kwan.thinkba.R;
 
 public class IntroActivity extends AppCompatActivity {
+    LinearLayout ll_intro;
 
     Handler myHandler = new Handler();
     Runnable myRunnable = new Runnable() {
@@ -27,6 +29,8 @@ public class IntroActivity extends AppCompatActivity {
         // TODO 인트로 늘리기
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
+        ll_intro = (LinearLayout)findViewById(R.id.intro);
+        ll_intro.setBackgroundResource(R.drawable.intro);
 
         myHandler.postDelayed(myRunnable, 500);
     }
