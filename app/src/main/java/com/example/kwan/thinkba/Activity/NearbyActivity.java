@@ -9,27 +9,37 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.kwan.thinkba.Adapter.Nearby_Adapter;
+import com.example.kwan.thinkba.Daum_search.Item;
+import com.example.kwan.thinkba.Daum_search.OnFinishSearchListener;
+import com.example.kwan.thinkba.Daum_search.Searcher;
 import com.example.kwan.thinkba.GpsInfo;
 import com.example.kwan.thinkba.R;
-import com.skp.Tmap.TMapData;
-import com.skp.Tmap.TMapPOIItem;
-import com.skp.Tmap.TMapPoint;
-import com.skp.Tmap.TMapView;
 
-import java.util.ArrayList;
+
+import net.daum.mf.map.api.CameraUpdateFactory;
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPointBounds;
+import net.daum.mf.map.api.MapView;
+
+import java.util.HashMap;
+import java.util.List;
+
 
 /**
  * Created by hp on 2016-05-29.
  */
 public class NearbyActivity extends AppCompatActivity implements View.OnClickListener {
     final static String TAG = "NearbyActivity";
+    String apiKey = "965df1f1c4824c1f097710f996cc5de2";
+    Nearby_Adapter nearby_adapter;
 
+    private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
     ListView nearby_listview;
     LinearLayout nearby_maplayout;
-    TMapView mapView;
+    MapView mapView;
     GpsInfo gpsInfo;
-    TMapPoint currentPoint;
-    TMapData tmapdata;
 
     Button super_btn;
     Button hospital_btn;
@@ -52,30 +62,97 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         hospital_btn.setOnClickListener(this);
         hotel_btn = (Button)findViewById(R.id.hotel_btn);
         hotel_btn.setOnClickListener(this);
-        bike_btn = (Button)findViewById(R.id.bike_btn);
+        bike_btn = (Button)findViewById(R.id.food_btn);
         bike_btn.setOnClickListener(this);
         leisure_btn = (Button)findViewById(R.id.leisure_btn);
         leisure_btn.setOnClickListener(this);
-        nearby_listview = (ListView)findViewById(R.id.nearby_listview);
+        nearby_adapter = new Nearby_Adapter(NearbyActivity.this);
+        ((ListView)findViewById(R.id.nearby_listview)).setAdapter(nearby_adapter);
         nearby_maplayout = (LinearLayout)findViewById(R.id.nearby_mapview);
 
-        tmapinit();
+        daumMapinit();
 
     }
 
-    private void tmapinit(){
+    private void daumMapinit(){
         gpsInfo = new GpsInfo(NearbyActivity.this);
         if(gpsInfo.isGetLocation()) { // 현재 위치 받아오기
             latitude = gpsInfo.getLatitude();
             longitude = gpsInfo.getLongitude();
-            currentPoint = new TMapPoint(latitude,longitude);
         }
-        Log.e(TAG,"current point"+currentPoint);
-        mapView = new TMapView(this);
-        mapView.setSKPMapApiKey("d5c4630e-a1ac-3ddc-8417-03e1bf83e1b4");
-        mapView.setLocationPoint(longitude,latitude);
-        mapView.setCenterPoint(longitude,latitude); // 현재 위치로 지도화면 젼환
+        mapView = new MapView(this);
+        mapView.setDaumMapApiKey(apiKey);
+        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude),-1, true);
+        moveCamera(latitude,longitude);
         nearby_maplayout.addView(mapView);
+    }
+
+    /**
+     * 지도의 화면을 옮겨준다.
+     * **/
+    public void moveCamera(double latitude, double longitude){
+        MapPointBounds mapPointBounds = new MapPointBounds();
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(latitude,longitude);
+        MapPOIItem poiItem = new MapPOIItem();
+        poiItem.setItemName("현재 위치");
+        poiItem.setMapPoint(mapPoint);
+        poiItem.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
+        poiItem.setCustomSelectedImageResourceId(R.drawable.map_pin_red);
+        poiItem.setCustomImageAutoscale(false);
+        poiItem.setCustomImageAnchor(0.5f, 1.0f);
+        mapPointBounds.add(mapPoint);
+        mapView.addPOIItem(poiItem);
+        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
+    }
+
+    public void search(String query){
+        int radius = 10000; // 중심 좌표부터의 반경거리. 특정 지역을 중심으로 검색하려고 할 경우 사용. meter 단위 (0 ~ 10000)
+        int page = 1; // 페이지 번호 (1 ~ 3). 한페이지에 15개
+
+        Searcher searcher = new Searcher(); // net.daum.android.map.openapi.search.Searcher
+        searcher.searchKeyword(getApplicationContext(), query, latitude, longitude, radius, page, apiKey, new OnFinishSearchListener() {
+            @Override
+            public void onSuccess(List<Item> itemList) {
+                mapView.removeAllPOIItems(); // 기존 검색 결과 삭제
+                showResult(itemList); // 검색 결과 보여줌
+                nearby_adapter.setArrayItems(itemList);
+            }
+
+            @Override
+            public void onFail() {Log.e(TAG,"지도 검색 오류");
+            }
+        });
+    }
+
+    private void showResult(List<Item> itemList) {
+        MapPointBounds mapPointBounds = new MapPointBounds();
+
+        for (int i = 0; i < itemList.size(); i++) {
+            Item item = itemList.get(i);
+
+            MapPOIItem poiItem = new MapPOIItem();
+            poiItem.setItemName(item.title);
+            poiItem.setTag(i);
+            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
+            poiItem.setMapPoint(mapPoint);
+            mapPointBounds.add(mapPoint);
+            poiItem.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+            poiItem.setCustomImageResourceId(R.drawable.map_pin_blue);
+            poiItem.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage);
+            poiItem.setCustomSelectedImageResourceId(R.drawable.map_pin_red);
+            poiItem.setCustomImageAutoscale(false);
+            poiItem.setCustomImageAnchor(0.5f, 1.0f);
+
+            mapView.addPOIItem(poiItem);
+            mTagItemMap.put(poiItem.getTag(), item);
+        }
+
+        // 지도 위치 변경
+        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
+        MapPOIItem[] poiItems = mapView.getPOIItems();
+        if(poiItems.length >0){
+            mapView.selectPOIItem(poiItems[0],false);
+        }
     }
 
     // TODO: 2016-05-29 주변 검색 리스너, 어댑터 구현 해야함
@@ -83,33 +160,19 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.super_btn:
-                try {
-                    ArrayList<TMapPOIItem> POIItem = tmapdata.findAroundNamePOI(currentPoint,"화장실");
-                    Log.e(TAG, "POI Name: " + POIItem.get(0).getPOIName().toString());
-                }catch (Exception e){Log.e(TAG,"item 오류");e.printStackTrace();}
-                    tmapdata.findAroundNamePOI(currentPoint, "버스", new TMapData.FindAroundNamePOIListenerCallback() {
-                        @Override
-                        public void onFindAroundNamePOI(ArrayList<TMapPOIItem> poiItem) {
-                            for (int i = 0; i < poiItem.size(); i++) {
-                                TMapPOIItem item = poiItem.get(i);
-                                Log.e(TAG, "POI Name: " + item.getPOIName().toString() + ", " +
-                                        "Address: " + item.getPOIAddress().replace("null", "") + ", " +
-                                        "Point: " + item.getPOIPoint().toString());
-                            }
-                        }
-                    });
-                break;
+                search("편의점");
+               break;
             case R.id.hospital_btn:
-
+                search("병원");
                 break;
             case R.id.hotel_btn:
-
+                search("숙박");
                 break;
-            case R.id.bike_btn:
-
+            case R.id.food_btn:
+                search("음식점");
                 break;
             case R.id.leisure_btn:
-
+                search("관광명소");
                 break;
         }
     }

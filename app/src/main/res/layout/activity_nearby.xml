@@ -34,11 +34,11 @@
             android:layout_height="wrap_content"
             android:text="숙박"/>
         <Button
-            android:id="@+id/bike_btn"
+            android:id="@+id/food_btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="자전거"/>
+            android:text="음식점"/>
         <Button
             android:id="@+id/leisure_btn"
             android:layout_weight="1"
