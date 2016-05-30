@@ -36,7 +36,6 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     Nearby_Adapter nearby_adapter;
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
-    ListView nearby_listview;
     LinearLayout nearby_maplayout;
     MapView mapView;
     GpsInfo gpsInfo;
@@ -82,14 +81,15 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         }
         mapView = new MapView(this);
         mapView.setDaumMapApiKey(apiKey);
-        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude),-1, true);
+        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude),-1, true); // 현재위치로, 줌 설정
         moveCamera(latitude,longitude);
         nearby_maplayout.addView(mapView);
     }
 
     /**
+     * moveCamera
      * 지도의 화면을 옮겨준다.
-     * **/
+     **/
     public void moveCamera(double latitude, double longitude){
         MapPointBounds mapPointBounds = new MapPointBounds();
         MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(latitude,longitude);
@@ -105,6 +105,10 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
     }
 
+    /**
+     * search
+     * 키워드 검색
+     **/
     public void search(String query){
         int radius = 10000; // 중심 좌표부터의 반경거리. 특정 지역을 중심으로 검색하려고 할 경우 사용. meter 단위 (0 ~ 10000)
         int page = 1; // 페이지 번호 (1 ~ 3). 한페이지에 15개
@@ -124,6 +128,10 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
+    /**
+     * showResult
+     * 검색 결과 POI List
+     **/
     private void showResult(List<Item> itemList) {
         MapPointBounds mapPointBounds = new MapPointBounds();
 
@@ -155,7 +163,6 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    // TODO: 2016-05-29 주변 검색 리스너, 어댑터 구현 해야함
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

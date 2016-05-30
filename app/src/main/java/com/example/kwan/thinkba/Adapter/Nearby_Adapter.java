@@ -3,12 +3,14 @@ package com.example.kwan.thinkba.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.kwan.thinkba.Activity.MainActivity;
 import com.example.kwan.thinkba.Daum_search.Item;
 import com.example.kwan.thinkba.R;
 
@@ -63,11 +65,11 @@ public class Nearby_Adapter extends BaseAdapter {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent mapIntent = new Intent(mContext,MapActivity.class);
-//                    mapIntent.putExtra("latitude",mItems.get(finalPosition).latitude);
-//                    mapIntent.putExtra("longitude",mItems.get(finalPosition).longitude);
-//                    ((Activity)mContext).setResult(BasicValue.Basic.MAP, mapIntent);
-//                    ((Activity)mContext).finish();
+                    Intent mapIntent = new Intent(mContext,MainActivity.class);
+                    Log.e(TAG,"near_latitude :"+mItems.get(finalPosition).latitude);
+                    mapIntent.putExtra("near_latitude",mItems.get(finalPosition).latitude);
+                    mapIntent.putExtra("near_longitude",mItems.get(finalPosition).longitude);
+                    mContext.startActivity(mapIntent);
                 }
             });
         }

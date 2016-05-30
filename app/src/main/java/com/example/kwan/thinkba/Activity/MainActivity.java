@@ -26,7 +26,9 @@ import com.skp.Tmap.TMapGpsManager;
 import com.skp.Tmap.TMapPoint;
 import com.skp.Tmap.TMapPolyLine;
 import com.skp.Tmap.TMapView;
+import com.skp.Tmap.TmapCrypto;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TMapGpsManager gps = null;
     GpsInfo gpsInfo;
     TMapPoint startPoint;
-    TMapPoint arrivePoint;
+    static TMapPoint arrivePoint;
+    static TMapPoint passPoint; // 경유지
 
     FrameLayout mapLayout;
     TMapView mapView;
@@ -67,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         trackingBtn = (Button)findViewById(R.id.tracking);
         trackingBtn.setOnClickListener(trackingClickListener);
 
-        getArriveInfo();
         naviDrawerInit();
         tMapGps();
         tMapInit();
@@ -81,14 +83,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void getArriveInfo(){
         try {
             Intent intent = getIntent();
-            arrive = intent.getStringExtra("arrivePoint");
-            String temp[] = arrive.split(" ");
-            Log.e(TAG, "arrive :"+arrive);
+            try {
+                arrive = intent.getStringExtra("arrivePoint");
+                String temp[] = arrive.split(" ");
+                double latitude = Double.parseDouble(temp[1]);
+                double longitude = Double.parseDouble(temp[3]);
+                arrivePoint = new TMapPoint(latitude, longitude); // 도착지 포인트
+            }catch (Exception e){Log.e(TAG,"get arrivePoint error");}
 
-            double latitude = Double.parseDouble(temp[1]);
-            double longitude = Double.parseDouble(temp[3]);
-            arrivePoint = new TMapPoint(latitude,longitude);
+            double pass_latitude = intent.getDoubleExtra("near_latitude",0);
+            double pass_Longitude = intent.getDoubleExtra("near_longitude",0);
+            passPoint = new TMapPoint(pass_latitude,pass_Longitude); //경유지 포인트
+
         }catch (Exception e){
+            Log.e(TAG,"getArriveInfo error");
             e.printStackTrace();
         }
     }
@@ -109,8 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
         mapView.setLocationPoint(longitude,latitude); // 지도 현재 좌표 설정
         mapView.setCenterPoint(longitude,latitude); // 지도 현재 위치로
-        Log.e(TAG,"arrivePoint :"+arrivePoint);
-        if(arrivePoint != null){setPath();}
+
         mapLayout.addView(mapView);
     }
     /**
@@ -118,15 +125,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * 도착지 정보가 있다면 맵에 경로를 그려준다
      */
     private void setPath() {
-        Log.e(TAG,"setPath 진입");
-        TMapData tmapdata = new TMapData();
-        //출발지와 도착지를 받아 자전거 경로를 그려줌
-        tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, arrivePoint, new TMapData.FindPathDataListenerCallback() {
-            @Override
-            public void onFindPathData(TMapPolyLine tMapPolyLine) {
-                mapView.addTMapPath(tMapPolyLine);
+        try {
+            TMapData tmapdata = new TMapData();
+            if (passPoint.getLatitude() > 0.0 && arrivePoint != null ) { // 출발지와 도착지 사이의 주변검색 경유지를 그려줌
+                Log.d(TAG,"setPath 1번 진입");
+                ArrayList<TMapPoint> passlist = new ArrayList<TMapPoint>();
+                passlist.add(passPoint);
+                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, arrivePoint, passlist, 0, new TMapData.FindPathDataListenerCallback() {
+                    @Override
+                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
+                        mapView.addTMapPath(tMapPolyLine);
+                    }
+                });
+            } else if (arrivePoint != null) { //출발지와 도착지 결과를 받아 경로를 그려줌
+                Log.d(TAG,"setPath 2번 진입");
+                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, arrivePoint, new TMapData.FindPathDataListenerCallback() {
+                    @Override
+                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
+                        mapView.addTMapPath(tMapPolyLine);
+                    }
+                });
+            } else if(passPoint.getLatitude() > 0.0){ //출발지와 주변겸색 결과를 받아 자전거 경로를 그려줌
+                Log.d(TAG,"setPath 3번 진입");
+                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, passPoint, new TMapData.FindPathDataListenerCallback() {
+                    @Override
+                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
+                        mapView.addTMapPath(tMapPolyLine);
+                    }
+                });
             }
-        });
+        }catch (Exception e){Log.e(TAG,"setPath error");}
     }
 
     private void tMapGps(){
@@ -144,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onLocationChange(Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        Log.e(TAG,"onLocationChange " + location.getLatitude() +  " " + location.getLongitude() + " " + location.getSpeed() + " " + location.getAccuracy());
+        Log.d(TAG,"onLocationChange " + location.getLatitude() +  " " + location.getLongitude() + " " + location.getSpeed() + " " + location.getAccuracy());
         if(m_bTrackingMode) {
             mapView.setLocationPoint(location.getLongitude(), location.getLatitude());
         }
@@ -227,8 +255,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }else{
                 Toast.makeText(MainActivity.this, "GPS 연동 실패", Toast.LENGTH_SHORT).show();
             }
-            Log.e(TAG,"longitude :"+longitude);
-            Log.e(TAG,"latitude :"+latitude);
         }
     };
 
@@ -266,4 +292,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     };
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getArriveInfo();
+        if (arrivePoint != null || passPoint.getLatitude() != 0.0) {setPath();}
+    }
 }
