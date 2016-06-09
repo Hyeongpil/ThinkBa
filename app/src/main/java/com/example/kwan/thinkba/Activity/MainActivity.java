@@ -58,6 +58,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean m_bTrackingMode = false;
     private ListViewDialog mDialog;
 
+    // test 사고다발지역
+    TMapCircle tcircle1 = new TMapCircle();
+    TMapCircle tcircle2 = new TMapCircle();
+    TMapCircle tcircle3 = new TMapCircle();
+    TMapCircle tcircle4 = new TMapCircle();
+    TMapCircle tcircle5 = new TMapCircle();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,16 +111,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void tMapInit(){
-        // TODO: 2016-06-09 아래 지우고 api 사용해서 그리기
-        TMapCircle tcircle = new TMapCircle();
-        TMapPoint circlePoint;
-        circlePoint = new TMapPoint(36.624444,127.463919);
-        tcircle.setCenterPoint(circlePoint);
-        tcircle.setRadius(70);
-        tcircle.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle.setRadiusVisible(true);
-        tcircle.setAreaAlpha(60);
-        Log.e(TAG,"circlepoint"+circlePoint);
+
+        tmapCircle();
 
         gpsInfo = new GpsInfo(MainActivity.this);
         if(gpsInfo.isGetLocation()) { // 현재 위치 받아오기
@@ -130,9 +129,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
         mapView.setLocationPoint(longitude,latitude); // 지도 현재 좌표 설정
         mapView.setCenterPoint(longitude,latitude); // 지도 현재 위치로
-        mapView.addTMapCircle("test",tcircle);
+        mapView.addTMapCircle("test1",tcircle1);
+        mapView.addTMapCircle("test2",tcircle2);
+        mapView.addTMapCircle("test3",tcircle3);
+        mapView.addTMapCircle("test4",tcircle4);
+        mapView.addTMapCircle("test5",tcircle5);
 
         mapLayout.addView(mapView);
+    }
+
+    private void tmapCircle(){
+
+        TMapPoint circlePoint1;
+        circlePoint1 = new TMapPoint(36.624444,127.463919);
+        tcircle1.setCenterPoint(circlePoint1);
+        tcircle1.setRadius(70);
+        tcircle1.setAreaColor(Color.rgb(255, 0, 0));
+        tcircle1.setRadiusVisible(true);
+        tcircle1.setAreaAlpha(60);
+
+        TMapPoint circlePoint2;
+        circlePoint2 = new TMapPoint(36.6348789,127.4580101);
+        tcircle2.setCenterPoint(circlePoint2);
+        tcircle2.setRadius(70);
+        tcircle2.setAreaColor(Color.rgb(255, 0, 0));
+        tcircle2.setRadiusVisible(true);
+        tcircle2.setAreaAlpha(60);
+
+        TMapPoint circlePoint3;
+        circlePoint3 = new TMapPoint(36.6359112,127.4770863);
+        tcircle3.setCenterPoint(circlePoint3);
+        tcircle3.setRadius(70);
+        tcircle3.setAreaColor(Color.rgb(255, 0, 0));
+        tcircle3.setRadiusVisible(true);
+        tcircle3.setAreaAlpha(60);
+
+        TMapPoint circlePoint4;
+        circlePoint4 = new TMapPoint(36.6341053,127.4452283);
+        tcircle4.setCenterPoint(circlePoint4);
+        tcircle4.setRadius(70);
+        tcircle4.setAreaColor(Color.rgb(255, 0, 0));
+        tcircle4.setRadiusVisible(true);
+        tcircle4.setAreaAlpha(60);
+
+        TMapPoint circlePoint5;
+        circlePoint5 = new TMapPoint(36.6326887,127.4386179);
+        tcircle5.setCenterPoint(circlePoint5);
+        tcircle5.setRadius(70);
+        tcircle5.setAreaColor(Color.rgb(255, 0, 0));
+        tcircle5.setRadiusVisible(true);
+        tcircle5.setAreaAlpha(60);
     }
     /**
      * setPath
