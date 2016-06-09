@@ -2,6 +2,7 @@ package com.example.kwan.thinkba.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.example.kwan.thinkba.GpsInfo;
 import com.example.kwan.thinkba.ListViewDialog;
 import com.example.kwan.thinkba.R;
+import com.skp.Tmap.TMapCircle;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapGpsManager;
 import com.skp.Tmap.TMapPoint;
@@ -102,6 +104,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void tMapInit(){
+        // TODO: 2016-06-09 아래 지우고 api 사용해서 그리기
+        TMapCircle tcircle = new TMapCircle();
+        TMapPoint circlePoint;
+        circlePoint = new TMapPoint(36.624444,127.463919);
+        tcircle.setCenterPoint(circlePoint);
+        tcircle.setRadius(70);
+        tcircle.setAreaColor(Color.rgb(255, 0, 0));
+        tcircle.setRadiusVisible(true);
+        tcircle.setAreaAlpha(60);
+        Log.e(TAG,"circlepoint"+circlePoint);
+
         gpsInfo = new GpsInfo(MainActivity.this);
         if(gpsInfo.isGetLocation()) { // 현재 위치 받아오기
             latitude = gpsInfo.getLatitude();
@@ -117,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
         mapView.setLocationPoint(longitude,latitude); // 지도 현재 좌표 설정
         mapView.setCenterPoint(longitude,latitude); // 지도 현재 위치로
+        mapView.addTMapCircle("test",tcircle);
 
         mapLayout.addView(mapView);
     }

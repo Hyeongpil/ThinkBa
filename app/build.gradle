@@ -26,4 +26,5 @@ dependencies {
     compile 'com.android.support:design:23.3.0'
     compile files('libs/com.skp.Tmap_1.0.37.jar')
     compile files('libs/libDaumMapAndroid.jar')
+    compile group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
 }

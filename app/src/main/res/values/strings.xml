@@ -4,6 +4,7 @@
     <color name="black">#000000</color>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="kakao_app_key">7fec336e4efd73b1891d38d342085d84</string>
     <!-- ListDialog를 위한 string -->
     <string name="list_dialog_title">지도 메뉴</string>
     <string-array name="list_dialog_list_item">
@@ -11,5 +12,6 @@
         <item>주변 검색</item>
         <item>지도 설정</item>
     </string-array>
+
 
 </resources>
