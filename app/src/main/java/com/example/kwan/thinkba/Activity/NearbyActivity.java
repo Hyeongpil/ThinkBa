@@ -26,6 +26,8 @@ import net.daum.mf.map.api.MapView;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+
 
 /**
  * Created by hp on 2016-05-29.
@@ -36,15 +38,15 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     Nearby_Adapter nearby_adapter;
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
-    LinearLayout nearby_maplayout;
+    @BindView(R.id.nearby_mapview) LinearLayout nearby_maplayout;
     MapView mapView;
     GpsInfo gpsInfo;
 
-    Button super_btn;
-    Button hospital_btn;
-    Button hotel_btn;
-    Button bike_btn;
-    Button leisure_btn;
+    @BindView(R.id.super_btn) Button super_btn;
+    @BindView(R.id.hospital_btn) Button hospital_btn;
+    @BindView(R.id.hotel_btn) Button hotel_btn;
+    @BindView(R.id.food_btn) Button food_btn;
+    @BindView(R.id.leisure_btn) Button leisure_btn;
 
     double latitude;
     double longitude;
@@ -55,15 +57,10 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_nearby);
         setTitle("주변 검색");
 
-        super_btn = (Button)findViewById(R.id.super_btn);
         super_btn.setOnClickListener(this);
-        hospital_btn = (Button)findViewById(R.id.hospital_btn);
         hospital_btn.setOnClickListener(this);
-        hotel_btn = (Button)findViewById(R.id.hotel_btn);
         hotel_btn.setOnClickListener(this);
-        bike_btn = (Button)findViewById(R.id.food_btn);
-        bike_btn.setOnClickListener(this);
-        leisure_btn = (Button)findViewById(R.id.leisure_btn);
+        food_btn.setOnClickListener(this);
         leisure_btn.setOnClickListener(this);
         nearby_adapter = new Nearby_Adapter(NearbyActivity.this);
         ((ListView)findViewById(R.id.nearby_listview)).setAdapter(nearby_adapter);

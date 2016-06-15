@@ -20,7 +20,6 @@ import com.kakao.util.helper.log.Logger;
  */
 public class KakaoSignupActivity extends Activity{
     final static String TAG = "KakaoSignupActivity";
-    GlobalApplication globalApplication;
     /**
      * Main으로 넘길지 가입 페이지를 그릴지 판단하기 위해 me를 호출한다.
      * @param savedInstanceState 기존 session 정보가 저장된 객체

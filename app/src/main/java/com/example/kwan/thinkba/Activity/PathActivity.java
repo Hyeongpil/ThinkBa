@@ -20,6 +20,8 @@ import com.skp.Tmap.TMapPoint;
 import com.skp.Tmap.TMapPolyLine;
 import com.skp.Tmap.TMapView;
 
+import butterknife.BindView;
+
 /**
  * Created by hp on 2016-05-21.
  */
@@ -27,9 +29,9 @@ public class PathActivity extends AppCompatActivity {
     final static String TAG = "PathActivity";
 
     TMapView mapView;
-    FrameLayout mapLayout;
-    TextView tv_pathInfo;
-    Button startBtn;
+    @BindView(R.id.pathMapLayout) FrameLayout mapLayout;
+    @BindView(R.id.pathInfo) TextView tv_pathInfo;
+    @BindView(R.id.start) Button startBtn;
     GpsInfo gpsInfo;
 
     TMapPoint startPoint;
@@ -48,9 +50,6 @@ public class PathActivity extends AppCompatActivity {
         setContentView(R.layout.activity_path);
         setTitle("자전거 경로 안내");
 
-        mapLayout = (FrameLayout)findViewById(R.id.pathMapLayout);
-        tv_pathInfo = (TextView)findViewById(R.id.pathInfo);
-        startBtn = (Button)findViewById(R.id.start);
         startBtn.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {

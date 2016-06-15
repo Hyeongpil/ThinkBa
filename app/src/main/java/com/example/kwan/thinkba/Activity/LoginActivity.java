@@ -13,19 +13,20 @@ import com.kakao.auth.Session;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
+import butterknife.BindView;
+
 /**
  * Created by kwan on 2016-04-17.
  */
 public class LoginActivity extends Activity {
 
     private SessionCallback callback;      //콜백 선언
-    FrameLayout login_layout;
+    @BindView(R.id.login_layout) FrameLayout login_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        login_layout = (FrameLayout) findViewById(R.id.login_layout);
         login_layout.setBackgroundResource(R.drawable.intro);
 
         //카카오 콜백 선언

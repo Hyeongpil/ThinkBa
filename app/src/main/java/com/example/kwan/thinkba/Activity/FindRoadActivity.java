@@ -22,16 +22,19 @@ import com.skp.Tmap.TMapPOIItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.OnClick;
+
 /**
  * Created by hp on 2016-05-17.
  */
 public class FindRoadActivity extends AppCompatActivity {
     final static String TAG = "FindRoadActivity";
     TMapData tmapdata = new TMapData();
-    Button search;
-    EditText goal;
+    @BindView(R.id.search) Button search;
+    @BindView(R.id.goal) EditText goal;
 
-    ListView mListView = null;
+    @BindView(R.id.loadList) ListView mListView = null;
     FindRoad_Adapter findRoad_adapter;
 
     @Override
@@ -40,10 +43,7 @@ public class FindRoadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_findroad);
         setTitle("길 찾기");
 
-        search = (Button)findViewById(R.id.search);
-        search.setOnClickListener(searchClickListener);
-        goal = (EditText)findViewById(R.id.goal);
-        mListView = (ListView)findViewById(R.id.loadList);
+        search_btnClick();
 
         findRoad_adapter = new FindRoad_Adapter(FindRoadActivity.this);
         mListView.setAdapter(findRoad_adapter);
@@ -53,33 +53,31 @@ public class FindRoadActivity extends AppCompatActivity {
      * searchClickListener
      * 검색어를 검색하여 item 으로 받는다.
      */
-    Button.OnClickListener searchClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            try {
-                String strData = goal.getText().toString();
-                tmapdata.findAllPOI(strData, new TMapData.FindAllPOIListenerCallback() {
-                    @Override
-                    public void onFindAllPOI(ArrayList<TMapPOIItem> poiItem) {
-                        List<POI_Data> itemList = new ArrayList<POI_Data>();
-                        for (int i = 0; i < poiItem.size(); i++) {
-                            TMapPOIItem  item = poiItem.get(i);
-                            POI_Data poi_data = new POI_Data();
-                            Log.d(TAG,"POI Name: " + item.getPOIName().toString() + ", " +
-                                    "Address: " + item.getPOIAddress().replace("null", "")  + ", " +
-                                    "Point: " + item.getPOIPoint().toString());
-                            poi_data.poiname = item.getPOIName().toString();
-                            poi_data.address = item.getPOIAddress().replace("null", "");
-                            poi_data.point = item.getPOIPoint().toString();
-                            itemList.add(poi_data);
-                        }
-                        findRoad_adapter.setArrayItems(itemList);
+    @OnClick(R.id.search)
+    void search_btnClick(){
+        try {
+            String strData = goal.getText().toString();
+            tmapdata.findAllPOI(strData, new TMapData.FindAllPOIListenerCallback() {
+                @Override
+                public void onFindAllPOI(ArrayList<TMapPOIItem> poiItem) {
+                    List<POI_Data> itemList = new ArrayList<POI_Data>();
+                    for (int i = 0; i < poiItem.size(); i++) {
+                        TMapPOIItem  item = poiItem.get(i);
+                        POI_Data poi_data = new POI_Data();
+                        Log.d(TAG,"POI Name: " + item.getPOIName().toString() + ", " +
+                                "Address: " + item.getPOIAddress().replace("null", "")  + ", " +
+                                "Point: " + item.getPOIPoint().toString());
+                        poi_data.poiname = item.getPOIName().toString();
+                        poi_data.address = item.getPOIAddress().replace("null", "");
+                        poi_data.point = item.getPOIPoint().toString();
+                        itemList.add(poi_data);
                     }
-                });
-            }catch (Exception e){
-                Log.e(TAG,"검색 오류");
-            }
+                    findRoad_adapter.setArrayItems(itemList);
+                }
+            });
+        }catch (Exception e){
+            Log.e(TAG,"검색 오류");
         }
-    };
+    }
 
 }

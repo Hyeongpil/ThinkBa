@@ -28,12 +28,14 @@ import com.skp.Tmap.TMapGpsManager;
 import com.skp.Tmap.TMapPoint;
 import com.skp.Tmap.TMapPolyLine;
 import com.skp.Tmap.TMapView;
-import com.skp.Tmap.TmapCrypto;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TMapGpsManager.onLocationChangedCallback {
@@ -45,11 +47,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static TMapPoint arrivePoint;
     static TMapPoint passPoint; // 경유지
 
-    FrameLayout mapLayout;
     TMapView mapView;
-    Button nowLocationBtn;
-    Button mapMenuBtn;
-    Button trackingBtn;
+    @BindView(R.id.mapLayout) FrameLayout mapLayout;
+    @BindView(R.id.nowLocation) Button nowLocationBtn;
+    @BindView(R.id.mapMenu) Button mapMenuBtn;
+    @BindView(R.id.tracking) Button trackingBtn;
 
     double latitude; //위도
     double longitude; // 경도
@@ -70,14 +72,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
+        ButterKnife.bind(this);
 
-        mapLayout = (FrameLayout)findViewById(R.id.mapLayout);
-        nowLocationBtn = (Button)findViewById(R.id.nowLocation);
-        nowLocationBtn.setOnClickListener(nowClickListener);
-        mapMenuBtn = (Button)findViewById(R.id.mapMenu);
-        mapMenuBtn.setOnClickListener(menuClickListener);
-        trackingBtn = (Button)findViewById(R.id.tracking);
-        trackingBtn.setOnClickListener(trackingClickListener);
+        now_btnClick();
+        mapMenu_btnClick();
+        tracking_btnClick();
 
         naviDrawerInit();
         tMapGps();
@@ -129,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
         mapView.setLocationPoint(longitude,latitude); // 지도 현재 좌표 설정
         mapView.setCenterPoint(longitude,latitude); // 지도 현재 위치로
+
+
         mapView.addTMapCircle("test1",tcircle1);
         mapView.addTMapCircle("test2",tcircle2);
         mapView.addTMapCircle("test3",tcircle3);
@@ -145,15 +146,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tcircle1.setCenterPoint(circlePoint1);
         tcircle1.setRadius(70);
         tcircle1.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle1.setRadiusVisible(true);
         tcircle1.setAreaAlpha(60);
 
         TMapPoint circlePoint2;
-        circlePoint2 = new TMapPoint(36.6348789,127.4580101);
+        circlePoint2 = new TMapPoint(36.6349821,127.46015);
         tcircle2.setCenterPoint(circlePoint2);
         tcircle2.setRadius(70);
         tcircle2.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle2.setRadiusVisible(true);
         tcircle2.setAreaAlpha(60);
 
         TMapPoint circlePoint3;
@@ -161,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tcircle3.setCenterPoint(circlePoint3);
         tcircle3.setRadius(70);
         tcircle3.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle3.setRadiusVisible(true);
         tcircle3.setAreaAlpha(60);
 
         TMapPoint circlePoint4;
@@ -169,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tcircle4.setCenterPoint(circlePoint4);
         tcircle4.setRadius(70);
         tcircle4.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle4.setRadiusVisible(true);
         tcircle4.setAreaAlpha(60);
 
         TMapPoint circlePoint5;
@@ -177,9 +174,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tcircle5.setCenterPoint(circlePoint5);
         tcircle5.setRadius(70);
         tcircle5.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle5.setRadiusVisible(true);
         tcircle5.setAreaAlpha(60);
     }
+
+    private TMapCircle setCircle(double lat,double lon){
+        TMapPoint circlePoint = new TMapPoint(lat,lon);
+        TMapCircle tcircle = new TMapCircle();
+        tcircle.setCenterPoint(circlePoint);
+        tcircle.setRadius(70);
+        tcircle.setAreaColor(Color.rgb(255, 0, 0));
+        tcircle.setAreaAlpha(60);
+
+        return tcircle;
+    }
+
     /**
      * setPath
      * 도착지 정보가 있다면 맵에 경로를 그려준다
@@ -301,56 +309,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * nowClickListener
      * 화면중심을 단말의 현재위치로 이동시켜준다.
      */
-    Button.OnClickListener nowClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            gpsInfo = new GpsInfo(MainActivity.this);
-            if(gpsInfo.isGetLocation()) {
-                latitude = gpsInfo.getLatitude();
-                longitude = gpsInfo.getLongitude();
-                mapView.setLocationPoint(longitude,latitude);
-                mapView.setCenterPoint(longitude,latitude);
-//                Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.map_pin_red);
-//                mapView.setIcon(bitmap);
-            }else{
-                Toast.makeText(MainActivity.this, "GPS 연동 실패", Toast.LENGTH_SHORT).show();
-            }
+    @OnClick(R.id.nowLocation)
+    void now_btnClick() {
+        gpsInfo = new GpsInfo(MainActivity.this);
+        if (gpsInfo.isGetLocation()) {
+            latitude = gpsInfo.getLatitude();
+            longitude = gpsInfo.getLongitude();
+            mapView.setLocationPoint(longitude, latitude);
+            mapView.setCenterPoint(longitude, latitude);
+            //Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.map_pin_red);
+            //mapView.setIcon(bitmap);
+        } else {
+            Toast.makeText(MainActivity.this, "GPS 연동 실패", Toast.LENGTH_SHORT).show();
         }
-    };
+    }
 
-    Button.OnClickListener menuClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String[] item = getResources().getStringArray(R.array.list_dialog_list_item);
-            List<String> listItem = Arrays.asList(item);
-            ArrayList<String> itemArrayList = new ArrayList<String>(listItem);
-            mDialog = new ListViewDialog(mContext, getString(R.string.list_dialog_title), itemArrayList);
-            mDialog.onOnSetItemClickListener(new ListViewDialog.ListViewDialogSelectListener(){
-                @Override
-                public void onSetOnItemClickListener(int position) {
-                    if (position == 0){
-                        Intent intent = new Intent(MainActivity.this,FindRoadActivity.class);
-                        startActivity(intent);
-                    }
-                    else if (position == 1){
-                        Intent intent = new Intent(MainActivity.this,NearbyActivity.class);
-                        startActivity(intent);
-                    }
-                    else if(position == 2){
-                        Log.v(TAG, " 세번째 인덱스가 선택되었습니다");
-                    }
-                    mDialog.dismiss();
+    @OnClick(R.id.mapMenu)
+    void mapMenu_btnClick(){
+        String[] item = getResources().getStringArray(R.array.list_dialog_list_item);
+        List<String> listItem = Arrays.asList(item);
+        ArrayList<String> itemArrayList = new ArrayList<String>(listItem);
+        mDialog = new ListViewDialog(mContext, getString(R.string.list_dialog_title), itemArrayList);
+        mDialog.onOnSetItemClickListener(new ListViewDialog.ListViewDialogSelectListener(){
+            @Override
+            public void onSetOnItemClickListener(int position) {
+                if (position == 0){
+                    Intent intent = new Intent(MainActivity.this,FindRoadActivity.class);
+                    startActivity(intent);
                 }
-            });
-            mDialog.show();
-        }
-    };
-    Button.OnClickListener trackingClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            setTrackingMode();
-        }
-    };
+                else if (position == 1){
+                    Intent intent = new Intent(MainActivity.this,NearbyActivity.class);
+                    startActivity(intent);
+                }
+                else if(position == 2){
+                    Log.v(TAG, " 세번째 인덱스가 선택되었습니다");
+                }
+                mDialog.dismiss();
+            }
+        });
+        mDialog.show();
+    }
+    @OnClick(R.id.tracking)
+    void tracking_btnClick(){
+        setTrackingMode();
+    }
 
     @Override
     protected void onStart() {
