@@ -13,7 +13,8 @@ import com.kakao.auth.Session;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
-import butterknife.BindView;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by kwan on 2016-04-17.
@@ -21,13 +22,13 @@ import butterknife.BindView;
 public class LoginActivity extends Activity {
 
     private SessionCallback callback;      //콜백 선언
-    @BindView(R.id.login_layout) FrameLayout login_layout;
+    @Bind(R.id.login_layout) FrameLayout login_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        login_layout.setBackgroundResource(R.drawable.intro);
+        ButterKnife.bind(this);
 
         //카카오 콜백 선언
         callback = new SessionCallback();

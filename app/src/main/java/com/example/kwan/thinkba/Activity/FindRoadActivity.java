@@ -22,7 +22,8 @@ import com.skp.Tmap.TMapPOIItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -31,21 +32,22 @@ import butterknife.OnClick;
 public class FindRoadActivity extends AppCompatActivity {
     final static String TAG = "FindRoadActivity";
     TMapData tmapdata = new TMapData();
-    @BindView(R.id.search) Button search;
-    @BindView(R.id.goal) EditText goal;
+    @Bind(R.id.search) Button search;
+    @Bind(R.id.goal) EditText goal;
 
-    @BindView(R.id.loadList) ListView mListView = null;
+
+    ListView mListView = null;
     FindRoad_Adapter findRoad_adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_findroad);
+        ButterKnife.bind(this);
         setTitle("길 찾기");
 
-        search_btnClick();
-
         findRoad_adapter = new FindRoad_Adapter(FindRoadActivity.this);
+        mListView = (ListView)findViewById(R.id.findload_listview);
         mListView.setAdapter(findRoad_adapter);
     }
 
@@ -54,8 +56,10 @@ public class FindRoadActivity extends AppCompatActivity {
      * 검색어를 검색하여 item 으로 받는다.
      */
     @OnClick(R.id.search)
-    void search_btnClick(){
+    void search_btnClick(View view){
         try {
+            Log.e(TAG,"goal :"+goal);
+            Log.e(TAG,"search :"+search);
             String strData = goal.getText().toString();
             tmapdata.findAllPOI(strData, new TMapData.FindAllPOIListenerCallback() {
                 @Override

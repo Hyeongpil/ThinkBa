@@ -24,12 +24,14 @@
             android:layout_gravity="right"
             android:orientation="vertical">
             <Button
+                android:onClick="now_btnClick"
                 android:id="@+id/nowLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="현위치"
                 android:layout_gravity="right" />
             <Button
+                android:onClick="tracking_btnClick"
                 android:id="@+id/tracking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,6 +41,7 @@
 
 
         <Button
+            android:onClick="mapMenu_btnClick"
             android:id="@+id/mapMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -26,7 +26,8 @@ import net.daum.mf.map.api.MapView;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.BindView;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 /**
@@ -38,15 +39,15 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     Nearby_Adapter nearby_adapter;
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
-    @BindView(R.id.nearby_mapview) LinearLayout nearby_maplayout;
+    LinearLayout nearby_maplayout;
     MapView mapView;
     GpsInfo gpsInfo;
 
-    @BindView(R.id.super_btn) Button super_btn;
-    @BindView(R.id.hospital_btn) Button hospital_btn;
-    @BindView(R.id.hotel_btn) Button hotel_btn;
-    @BindView(R.id.food_btn) Button food_btn;
-    @BindView(R.id.leisure_btn) Button leisure_btn;
+    @Bind(R.id.super_btn) Button super_btn;
+    @Bind(R.id.hospital_btn) Button hospital_btn;
+    @Bind(R.id.hotel_btn) Button hotel_btn;
+    @Bind(R.id.food_btn) Button food_btn;
+    @Bind(R.id.leisure_btn) Button leisure_btn;
 
     double latitude;
     double longitude;
@@ -56,6 +57,7 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby);
         setTitle("주변 검색");
+        ButterKnife.bind(this);
 
         super_btn.setOnClickListener(this);
         hospital_btn.setOnClickListener(this);
