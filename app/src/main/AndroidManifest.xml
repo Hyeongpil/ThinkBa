@@ -38,6 +38,8 @@
         </activity>
         <activity android:name=".Kakao.KakaoSignupActivity">
         </activity>
+        <activity android:name=".Activity.SettingActivity">
+        </activity>
 
     </application>
 

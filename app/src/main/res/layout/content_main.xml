@@ -37,6 +37,12 @@
                 android:layout_height="wrap_content"
                 android:text="트래킹"
                 android:layout_gravity="right" />
+            <Button
+                android:id="@+id/deletePath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="안내 취소"
+                android:layout_gravity="right" />
         </LinearLayout>
 
 

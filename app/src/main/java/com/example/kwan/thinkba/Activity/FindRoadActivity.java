@@ -1,5 +1,6 @@
 package com.example.kwan.thinkba.Activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -36,6 +38,7 @@ public class FindRoadActivity extends AppCompatActivity {
     @Bind(R.id.goal) EditText goal;
 
 
+    private InputMethodManager imm;
     ListView mListView = null;
     FindRoad_Adapter findRoad_adapter;
 
@@ -46,6 +49,7 @@ public class FindRoadActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setTitle("길 찾기");
 
+        imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         findRoad_adapter = new FindRoad_Adapter(FindRoadActivity.this);
         mListView = (ListView)findViewById(R.id.findload_listview);
         mListView.setAdapter(findRoad_adapter);
@@ -58,8 +62,6 @@ public class FindRoadActivity extends AppCompatActivity {
     @OnClick(R.id.search)
     void search_btnClick(View view){
         try {
-            Log.e(TAG,"goal :"+goal);
-            Log.e(TAG,"search :"+search);
             String strData = goal.getText().toString();
             tmapdata.findAllPOI(strData, new TMapData.FindAllPOIListenerCallback() {
                 @Override
@@ -79,6 +81,7 @@ public class FindRoadActivity extends AppCompatActivity {
                     findRoad_adapter.setArrayItems(itemList);
                 }
             });
+            imm.hideSoftInputFromWindow(goal.getWindowToken(), 0); // 키보드 숨김
         }catch (Exception e){
             Log.e(TAG,"검색 오류");
         }

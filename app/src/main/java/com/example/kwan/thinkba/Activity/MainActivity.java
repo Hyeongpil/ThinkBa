@@ -51,12 +51,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     TMapView mapView;
     FrameLayout mapLayout;
-    @Bind(R.id.nowLocation)
-    Button nowLocationBtn;
-    @Bind(R.id.mapMenu)
-    Button mapMenuBtn;
-    @Bind(R.id.tracking)
-    Button trackingBtn;
+    @Bind(R.id.nowLocation) Button nowLocationBtn;
+    @Bind(R.id.mapMenu) Button mapMenuBtn;
+    @Bind(R.id.tracking) Button trackingBtn;
+    @Bind(R.id.deletePath) Button deletePathBtn;
 
     double latitude; //위도
     double longitude; // 경도
@@ -233,8 +231,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void tMapGps() {
         gps = new TMapGpsManager(MainActivity.this);
-        gps.setMinTime(1000);
-        gps.setMinDistance(5);
+        gps.setMinTime(500);
+        gps.setMinDistance(3);
         gps.setProvider(gps.NETWORK_PROVIDER);
         gps.OpenGps();
     }
@@ -295,6 +293,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case (R.id.nav_archive):
                 break;
             case (R.id.nav_setting):
+                Intent setting_intent = new Intent(this,SettingActivity.class);
+                startActivity(setting_intent);
                 break;
             case (R.id.nav_logout):
                 UserManagement.requestLogout(new LogoutResponseCallback() {
@@ -303,8 +303,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(MainActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                Intent out_intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(out_intent);
                 finish();
                 break;
         }
@@ -371,11 +371,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         mDialog.show();
     }
-
+    //트래킹 모드 토글
     @OnClick(R.id.tracking)
     void tracking_btnClick(View view) {
         setTrackingMode();
     }
+    //경로 안내 라인 모두 제거
+    @OnClick(R.id.deletePath)
+    void deletePath_btnClick(View view){mapView.removeTMapPath();}
 
 
     @Override
