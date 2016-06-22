@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.kwan.thinkba.BasicValue;
 import com.example.kwan.thinkba.GpsInfo;
 import com.example.kwan.thinkba.ListViewDialog;
 import com.example.kwan.thinkba.R;
@@ -113,8 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void tMapInit() {
 
-        tmapCircle();
-
         gpsInfo = new GpsInfo(MainActivity.this);
         if (gpsInfo.isGetLocation()) { // 현재 위치 받아오기
             latitude = gpsInfo.getLatitude();
@@ -130,14 +129,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
         mapView.setLocationPoint(longitude, latitude); // 지도 현재 좌표 설정
         mapView.setCenterPoint(longitude, latitude); // 지도 현재 위치로
-
-
-        mapView.addTMapCircle("test1", tcircle1);
-        mapView.addTMapCircle("test2", tcircle2);
-        mapView.addTMapCircle("test3", tcircle3);
-        mapView.addTMapCircle("test4", tcircle4);
-        mapView.addTMapCircle("test5", tcircle5);
-
+        Log.e(TAG,"accident :"+BasicValue.getInstance().isAccident());
+        if(BasicValue.getInstance().isAccident()) {
+            Log.e(TAG,"진입");
+            tmapCircle();
+            mapView.addTMapCircle("test1", tcircle1);
+            mapView.addTMapCircle("test2", tcircle2);
+            mapView.addTMapCircle("test3", tcircle3);
+            mapView.addTMapCircle("test4", tcircle4);
+            mapView.addTMapCircle("test5", tcircle5);
+        }
         mapLayout.addView(mapView);
     }
 

@@ -1,6 +1,7 @@
 package com.example.kwan.thinkba.Activity;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.kwan.thinkba.Fragment.SettingFragment;
@@ -17,7 +18,6 @@ public class SettingActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         setTitle("설정");
-
         getFragmentManager().beginTransaction().replace(R.id.content_frame, new SettingFragment()).commit();
     }
 
