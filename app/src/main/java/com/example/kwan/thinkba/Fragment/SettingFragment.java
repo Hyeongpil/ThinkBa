@@ -41,7 +41,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
 
     /**
      * onSharedPreferenceChanged
-     * sharedPreferences에서 설정 값을 받아 BasicValue에 넣는다.
+     * sharedPreferences에서 설정 값을 받아 BasicValue와 pref에 넣는다.
      * @param sharedPreferences
      * @param key
      */

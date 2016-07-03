@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +25,7 @@ import com.example.kwan.thinkba.BasicValue;
 import com.example.kwan.thinkba.GpsInfo;
 import com.example.kwan.thinkba.ListViewDialog;
 import com.example.kwan.thinkba.R;
+import com.example.kwan.thinkba.Retrofit.AccidentThread;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.skp.Tmap.TMapCircle;
@@ -66,10 +69,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // test 사고다발지역
     TMapCircle tcircle1 = new TMapCircle();
-    TMapCircle tcircle2 = new TMapCircle();
-    TMapCircle tcircle3 = new TMapCircle();
-    TMapCircle tcircle4 = new TMapCircle();
-    TMapCircle tcircle5 = new TMapCircle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tMapGps();
         tMapInit();
 
+        Handler handler = new AccidentReceiveHandler();
+        Thread thread = new AccidentThread(handler,MainActivity.this);
+        thread.start();
     }
 
     /**
@@ -134,50 +136,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.e(TAG,"진입");
             tmapCircle();
             mapView.addTMapCircle("test1", tcircle1);
-            mapView.addTMapCircle("test2", tcircle2);
-            mapView.addTMapCircle("test3", tcircle3);
-            mapView.addTMapCircle("test4", tcircle4);
-            mapView.addTMapCircle("test5", tcircle5);
         }
         mapLayout.addView(mapView);
     }
 
     private void tmapCircle() {
-
         TMapPoint circlePoint1;
         circlePoint1 = new TMapPoint(36.624444, 127.463919);
         tcircle1.setCenterPoint(circlePoint1);
         tcircle1.setRadius(70);
         tcircle1.setAreaColor(Color.rgb(255, 0, 0));
         tcircle1.setAreaAlpha(60);
-
-        TMapPoint circlePoint2;
-        circlePoint2 = new TMapPoint(36.6349821, 127.46015);
-        tcircle2.setCenterPoint(circlePoint2);
-        tcircle2.setRadius(70);
-        tcircle2.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle2.setAreaAlpha(60);
-
-        TMapPoint circlePoint3;
-        circlePoint3 = new TMapPoint(36.6359112, 127.4770863);
-        tcircle3.setCenterPoint(circlePoint3);
-        tcircle3.setRadius(70);
-        tcircle3.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle3.setAreaAlpha(60);
-
-        TMapPoint circlePoint4;
-        circlePoint4 = new TMapPoint(36.6341053, 127.4452283);
-        tcircle4.setCenterPoint(circlePoint4);
-        tcircle4.setRadius(70);
-        tcircle4.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle4.setAreaAlpha(60);
-
-        TMapPoint circlePoint5;
-        circlePoint5 = new TMapPoint(36.6326887, 127.4386179);
-        tcircle5.setCenterPoint(circlePoint5);
-        tcircle5.setRadius(70);
-        tcircle5.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle5.setAreaAlpha(60);
     }
 
     private TMapCircle setCircle(double lat, double lon) {
@@ -380,6 +349,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //경로 안내 라인 모두 제거
     @OnClick(R.id.deletePath)
     void deletePath_btnClick(View view){mapView.removeTMapPath();}
+
+    private class AccidentReceiveHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Log.e(TAG,"핸들러 수신");
+        }
+    }
 
 
     @Override

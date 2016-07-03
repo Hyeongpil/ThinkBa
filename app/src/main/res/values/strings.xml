@@ -5,6 +5,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="kakao_app_key">7fec336e4efd73b1891d38d342085d84</string>
+    <string name="taas_key">uL50TuF8qdaxAAHQ5sXWvvPIO9VMNSToveE9ROkc8NdWfKj1ezFodcJM9BJbAuy%2B</string>
     <!-- ListDialog를 위한 string -->
     <string name="list_dialog_title">지도 메뉴</string>
     <string-array name="list_dialog_list_item">

@@ -8,15 +8,13 @@ import android.content.SharedPreferences;
 public class BasicValue {
     //싱글턴 패턴
     private static BasicValue ourInstance = new BasicValue();
+
     private boolean autoLogin;
     private boolean accident;
     private boolean accident_alarm;
     private boolean robber;
 
-
-    public static BasicValue getInstance(){
-        return ourInstance;
-    }
+    public static BasicValue getInstance(){return ourInstance;}
     private BasicValue(){}
 
     public boolean isAutoLogin() {return autoLogin;}
