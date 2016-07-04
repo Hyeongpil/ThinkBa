@@ -15,11 +15,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".GlobalApplication">
+        android:name=".util.GlobalApplication">
 
         <meta-data android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_app_key"  />
 
-        <activity android:name=".Activity.LoginActivity"
+        <activity android:name=".login.LoginActivity"
                   android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,18 +27,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity"
+        <activity android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".Activity.FindRoadActivity">
+        <activity android:name=".main.findroad.FindRoadActivity">
         </activity>
-        <activity android:name=".Activity.PathActivity">
+        <activity android:name=".main.findroad.PathActivity">
         </activity>
-        <activity android:name=".Activity.NearbyActivity">
+        <activity android:name=".main.nearby.NearbyActivity">
         </activity>
-        <activity android:name=".Kakao.KakaoSignupActivity">
+        <activity android:name=".util.kakao.KakaoSignupActivity">
         </activity>
-        <activity android:name=".Activity.SettingActivity">
+        <activity android:name=".setting.SettingActivity">
         </activity>
 
     </application>

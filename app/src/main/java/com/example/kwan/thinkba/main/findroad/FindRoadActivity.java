@@ -1,9 +1,7 @@
-package com.example.kwan.thinkba.Activity;
+package com.example.kwan.thinkba.main.findroad;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,11 +10,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.example.kwan.thinkba.Adapter.FindRoad_Adapter;
-import com.example.kwan.thinkba.ListViewDialog;
-import com.example.kwan.thinkba.POI_Data;
+import com.example.kwan.thinkba.util.POI_Data;
 import com.example.kwan.thinkba.R;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapPOIItem;

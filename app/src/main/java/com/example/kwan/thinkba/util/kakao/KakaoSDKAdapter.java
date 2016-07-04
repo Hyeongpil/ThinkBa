@@ -1,9 +1,9 @@
-package com.example.kwan.thinkba.Kakao;
+package com.example.kwan.thinkba.util.kakao;
 
 import android.app.Activity;
 import android.content.Context;
 
-import com.example.kwan.thinkba.GlobalApplication;
+import com.example.kwan.thinkba.util.GlobalApplication;
 import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.IApplicationConfig;

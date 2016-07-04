@@ -1,14 +1,13 @@
-package com.example.kwan.thinkba.Activity;
+package com.example.kwan.thinkba.login;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.FrameLayout;
 
-import com.example.kwan.thinkba.BasicValue;
-import com.example.kwan.thinkba.Kakao.KakaoSignupActivity;
+import com.example.kwan.thinkba.util.BasicValue;
+import com.example.kwan.thinkba.util.kakao.KakaoSignupActivity;
 import com.example.kwan.thinkba.R;
 
 import com.kakao.auth.ISessionCallback;

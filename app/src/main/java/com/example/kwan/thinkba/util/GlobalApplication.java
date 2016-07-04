@@ -1,15 +1,9 @@
-package com.example.kwan.thinkba;
+package com.example.kwan.thinkba.util;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 
-import com.example.kwan.thinkba.Kakao.KakaoSDKAdapter;
-import com.kakao.auth.ApprovalType;
-import com.kakao.auth.AuthType;
-import com.kakao.auth.IApplicationConfig;
-import com.kakao.auth.ISessionConfig;
-import com.kakao.auth.KakaoAdapter;
+import com.example.kwan.thinkba.util.kakao.KakaoSDKAdapter;
 import com.kakao.auth.KakaoSDK;
 
 /**

@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Daum_search;
+package com.example.kwan.thinkba.util.daum_search;
 
 import java.util.List;
 

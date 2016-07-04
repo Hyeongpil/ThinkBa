@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Adapter;
+package com.example.kwan.thinkba.main.nearby;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.kwan.thinkba.Activity.MainActivity;
-import com.example.kwan.thinkba.Daum_search.Item;
+import com.example.kwan.thinkba.main.MainActivity;
+import com.example.kwan.thinkba.util.daum_search.Item;
 import com.example.kwan.thinkba.R;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Fragment;
+package com.example.kwan.thinkba.setting;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
-import com.example.kwan.thinkba.BasicValue;
+import com.example.kwan.thinkba.util.BasicValue;
 import com.example.kwan.thinkba.R;
 
 /**

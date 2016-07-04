@@ -1,13 +1,12 @@
-package com.example.kwan.thinkba.Kakao;
+package com.example.kwan.thinkba.util.kakao;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.kwan.thinkba.Activity.LoginActivity;
-import com.example.kwan.thinkba.Activity.MainActivity;
-import com.example.kwan.thinkba.GlobalApplication;
+import com.example.kwan.thinkba.login.LoginActivity;
+import com.example.kwan.thinkba.main.MainActivity;
 import com.kakao.auth.ErrorCode;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;

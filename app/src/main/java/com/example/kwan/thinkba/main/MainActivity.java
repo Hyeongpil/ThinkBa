@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Activity;
+package com.example.kwan.thinkba.main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,11 +21,16 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.kwan.thinkba.BasicValue;
-import com.example.kwan.thinkba.GpsInfo;
-import com.example.kwan.thinkba.ListViewDialog;
+import com.example.kwan.thinkba.main.findroad.FindRoadActivity;
+import com.example.kwan.thinkba.login.LoginActivity;
+import com.example.kwan.thinkba.main.nearby.NearbyActivity;
+import com.example.kwan.thinkba.setting.SettingActivity;
+import com.example.kwan.thinkba.util.BasicValue;
+import com.example.kwan.thinkba.util.GpsInfo;
+import com.example.kwan.thinkba.util.ListViewDialog;
 import com.example.kwan.thinkba.R;
-import com.example.kwan.thinkba.Retrofit.AccidentThread;
+import com.example.kwan.thinkba.model.TmapPointArr;
+import com.example.kwan.thinkba.util.retrofit.AccidentThread;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.skp.Tmap.TMapCircle;
@@ -52,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TMapPoint startPoint;
     static TMapPoint arrivePoint;
     static TMapPoint passPoint; // 경유지
+    ArrayList<TMapPoint> arr_tMapPoint;
+    ArrayList<TMapCircle> arr_tMapCircle;
+    TmapPointArr tmapPointArr;
 
     TMapView mapView;
     FrameLayout mapLayout;
@@ -67,24 +75,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean m_bTrackingMode = false;
     private ListViewDialog mDialog;
 
-    // test 사고다발지역
-    TMapCircle tcircle1 = new TMapCircle();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = this;
-        ButterKnife.bind(this);
-        mapLayout = (FrameLayout)findViewById(R.id.mapLayout);
-
+        init();
         naviDrawerInit();
+
         tMapGps();
         tMapInit();
 
         Handler handler = new AccidentReceiveHandler();
         Thread thread = new AccidentThread(handler,MainActivity.this);
         thread.start();
+    }
+    private void init(){
+        mContext = this;
+        ButterKnife.bind(this);
+        mapLayout = (FrameLayout)findViewById(R.id.mapLayout);
+        arr_tMapPoint = new ArrayList<TMapPoint>();
+        arr_tMapCircle = new ArrayList<TMapCircle>();
     }
 
     /**
@@ -131,33 +141,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
         mapView.setLocationPoint(longitude, latitude); // 지도 현재 좌표 설정
         mapView.setCenterPoint(longitude, latitude); // 지도 현재 위치로
-        Log.e(TAG,"accident :"+BasicValue.getInstance().isAccident());
-        if(BasicValue.getInstance().isAccident()) {
-            Log.e(TAG,"진입");
-            tmapCircle();
-            mapView.addTMapCircle("test1", tcircle1);
-        }
+
         mapLayout.addView(mapView);
-    }
-
-    private void tmapCircle() {
-        TMapPoint circlePoint1;
-        circlePoint1 = new TMapPoint(36.624444, 127.463919);
-        tcircle1.setCenterPoint(circlePoint1);
-        tcircle1.setRadius(70);
-        tcircle1.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle1.setAreaAlpha(60);
-    }
-
-    private TMapCircle setCircle(double lat, double lon) {
-        TMapPoint circlePoint = new TMapPoint(lat, lon);
-        TMapCircle tcircle = new TMapCircle();
-        tcircle.setCenterPoint(circlePoint);
-        tcircle.setRadius(70);
-        tcircle.setAreaColor(Color.rgb(255, 0, 0));
-        tcircle.setAreaAlpha(60);
-
-        return tcircle;
     }
 
     /**
@@ -354,10 +339,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.e(TAG,"핸들러 수신");
+            tmapPointArr = (TmapPointArr) msg.getData().getSerializable("THREAD"); // 스레드에서 tMapPointArr를 받음
+
+            try {
+                setCircle(tmapPointArr.gettMapPointArr());
+
+                //사고다발지역 표시 여부가 true라면
+                Log.d(TAG, "accident :" + BasicValue.getInstance().isAccident());
+                if (BasicValue.getInstance().isAccident()) {
+                    for (int i = 0; i < arr_tMapCircle.size(); i++) {
+                        mapView.addTMapCircle("circle" + i, arr_tMapCircle.get(i));
+                    }
+                }
+            }catch (NullPointerException e){Log.e(TAG,"TmapCircle error :"+e.getMessage());}
         }
     }
 
+    private List<TMapCircle> setCircle(ArrayList<TMapPoint> tMapPointArr) {
+        for(int i = 0; i < tMapPointArr.size(); i++){
+            TMapPoint tempPoint = tMapPointArr.get(i);
+            TMapCircle tempcircle = new TMapCircle();
+            tempcircle.setCenterPoint(tempPoint);
+            tempcircle.setRadius(70);
+            tempcircle.setAreaColor(Color.rgb(255, 0, 0));
+            tempcircle.setAreaAlpha(60);
+            arr_tMapCircle.add(tempcircle);
+        }
+        return arr_tMapCircle;
+    }
 
     @Override
     protected void onStart() {

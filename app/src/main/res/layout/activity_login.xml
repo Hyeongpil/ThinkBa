@@ -10,7 +10,7 @@
     android:background="@drawable/intro"
     android:orientation="vertical"
     android:weightSum="10"
-    tools:context=".Activity.LoginActivity"
+    tools:context=".login.LoginActivity"
     android:id="@+id/login_layout">
 
 

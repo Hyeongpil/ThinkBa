@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba;
+package com.example.kwan.thinkba.util;
 
 import com.skp.Tmap.TMapPoint;
 

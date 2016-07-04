@@ -1,10 +1,8 @@
-package com.example.kwan.thinkba.Activity;
+package com.example.kwan.thinkba.setting;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.kwan.thinkba.Fragment.SettingFragment;
 import com.example.kwan.thinkba.R;
 
 

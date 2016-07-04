@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Activity;
+package com.example.kwan.thinkba.main.findroad;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kwan.thinkba.GpsInfo;
+import com.example.kwan.thinkba.main.MainActivity;
+import com.example.kwan.thinkba.util.GpsInfo;
 import com.example.kwan.thinkba.R;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapPoint;

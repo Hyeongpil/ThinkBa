@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Retrofit;
+package com.example.kwan.thinkba.util.retrofit;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,7 +7,11 @@ import android.os.Message;
 import android.util.Log;
 
 
-import com.example.kwan.thinkba.R;
+import com.example.kwan.thinkba.model.TmapPointArr;
+import com.skp.Tmap.TMapPoint;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,14 +26,16 @@ public class AccidentThread extends Thread {
     final static String TAG = "AccidentThread";
     Handler handler;
     Repo repo;
+    TmapPointArr tmapPointArr;
+    ArrayList<TMapPoint> arr_TmapPoint;
 
     Context mContext;
 
     String apiKey;
     String temp_api ="uL50TuF8qdaxAAHQ5sXWvvPIO9VMNSToveE9ROkc8NdWfKj1ezFodcJM9BJbAuy%2B";
     int searchYearCd = 2015046; //14년
-    int sido = 43; // 충청북도
-    int gugun = 112; //청주시 서원구
+    String sido = ""; // 공백 시 전체 선택
+    String gugun = "";
     String death = "N";
 
     public AccidentThread(Handler handler, Context mContext){
@@ -55,43 +61,30 @@ public class AccidentThread extends Thread {
             @Override
             public void onResponse(Call<Repo> call, Response<Repo> response) {
                 if(response.isSuccessful()){
+                    arr_TmapPoint = new ArrayList<TMapPoint>();
+                    //사고다발지역 결과를 받아 repo로 Gson 양식으로 받음
                     repo = response.body();
-                    Log.e(TAG,"response.raw :"+response.raw());
+                    Log.d(TAG,"response.raw :"+response.raw());
+                    List<Repo.searchResult.frequentzone> frequentzoneList = repo.getSearchResult().getFrequentzone();
 
-                    Log.e(TAG,"getSearchResult :"+repo.getFrequentzone());
-                    Log.e(TAG,"getResultCode :"+repo.getResultCode());
-//                    Log.e(TAG,"getspotname :"+repo.getFrequentzone().get(0).getSpotname());
+                    //받은 결과를 TMapPoint ArrayList로 저장
+                    for(int i=0; i < frequentzoneList.size(); i++ ){
+                        arr_TmapPoint.add(new TMapPoint(Double.parseDouble(frequentzoneList.get(i).getY_crd()),
+                                Double.parseDouble(frequentzoneList.get(i).getX_crd())));
+                    }
+
+                    tmapPointArr = new TmapPointArr(arr_TmapPoint);
+                    Message msg = Message.obtain();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("THREAD", tmapPointArr);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
                 }
             }
-
             @Override
             public void onFailure(Call<Repo> call, Throwable t) {
                 Log.e(TAG,"taas 통신 실패 :"+t.getMessage());
             }
         });
-
-//        Call<searchResult> call = service.getretrofit(apiKey,year,sido,gugun,death);
-//        call.enqueue(new Callback<searchResult>() {
-//            @Override
-//            public void onResponse(Call<searchResult> call, Response<searchResult> response) {
-//                Log.e(TAG,"성공");
-//                if(response.isSuccessful()){
-//                    searchResult = response.body();
-//                    Log.e(TAG,"getSearchResult :"+searchResult.getSearchResult());
-//                    Log.e(TAG,"getResultCode :"+searchResult.getResultCode());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<searchResult> call, Throwable t) {
-//                Log.e(TAG,"실패");
-//            }
-//        });
-
-        Message msg = Message.obtain();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("THREAD", repo);
-        msg.setData(bundle);
-        handler.sendMessage(msg);
     }
 }

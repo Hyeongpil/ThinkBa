@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Daum_search;
+package com.example.kwan.thinkba.util.daum_search;
 
 /**
  * Created by pixeleye03 on 2015-10-13.

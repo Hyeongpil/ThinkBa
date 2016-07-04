@@ -1,22 +1,17 @@
-package com.example.kwan.thinkba.Adapter;
+package com.example.kwan.thinkba.main.findroad;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Path;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.kwan.thinkba.Activity.FindRoadActivity;
-import com.example.kwan.thinkba.Activity.PathActivity;
-import com.example.kwan.thinkba.POI_Data;
+import com.example.kwan.thinkba.util.POI_Data;
 import com.example.kwan.thinkba.R;
-import java.util.ArrayList;
+
 import java.util.List;
 
 /**

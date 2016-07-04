@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.Activity;
+package com.example.kwan.thinkba.main.nearby;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,11 +9,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.example.kwan.thinkba.Adapter.Nearby_Adapter;
-import com.example.kwan.thinkba.Daum_search.Item;
-import com.example.kwan.thinkba.Daum_search.OnFinishSearchListener;
-import com.example.kwan.thinkba.Daum_search.Searcher;
-import com.example.kwan.thinkba.GpsInfo;
+import com.example.kwan.thinkba.util.daum_search.Item;
+import com.example.kwan.thinkba.util.daum_search.OnFinishSearchListener;
+import com.example.kwan.thinkba.util.daum_search.Searcher;
+import com.example.kwan.thinkba.util.GpsInfo;
 import com.example.kwan.thinkba.R;
 
 

@@ -1,6 +1,4 @@
-package com.example.kwan.thinkba;
-
-import android.content.SharedPreferences;
+package com.example.kwan.thinkba.util;
 
 /**
  * Created by hp on 2016-06-23.
