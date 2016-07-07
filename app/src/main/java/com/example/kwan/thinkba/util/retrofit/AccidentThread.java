@@ -69,8 +69,10 @@ public class AccidentThread extends Thread {
 
                     //받은 결과를 TMapPoint ArrayList로 저장
                     for(int i=0; i < frequentzoneList.size(); i++ ){
-                        arr_TmapPoint.add(new TMapPoint(Double.parseDouble(frequentzoneList.get(i).getY_crd()),
-                                Double.parseDouble(frequentzoneList.get(i).getX_crd())));
+                        try {
+                            arr_TmapPoint.add(new TMapPoint(Double.parseDouble(frequentzoneList.get(i).getY_crd()),
+                                    Double.parseDouble(frequentzoneList.get(i).getX_crd())));
+                        }catch (NumberFormatException e){Log.d(TAG,"좌표변환 오류 :"+e.getMessage());}
                     }
 
                     tmapPointArr = new TmapPointArr(arr_TmapPoint);
