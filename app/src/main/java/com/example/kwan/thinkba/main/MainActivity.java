@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,8 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.kwan.thinkba.main.findroad.FindRoadActivity;
 import com.example.kwan.thinkba.login.LoginActivity;
 import com.example.kwan.thinkba.main.nearby.NearbyActivity;
@@ -47,6 +53,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TMapGpsManager.onLocationChangedCallback {
@@ -67,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.mapMenu) Button mapMenuBtn;
     @Bind(R.id.tracking) Button trackingBtn;
     @Bind(R.id.deletePath) Button deletePathBtn;
+    ImageView profile_img;
+    TextView profile_name;
 
     double latitude; //위도
     double longitude; // 경도
@@ -85,43 +94,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tMapGps();
         tMapInit();
 
-        Handler handler = new AccidentReceiveHandler();
-        Thread thread = new AccidentThread(handler,MainActivity.this);
-        thread.start();
     }
+
     private void init(){
         mContext = this;
         ButterKnife.bind(this);
         mapLayout = (FrameLayout)findViewById(R.id.mapLayout);
         arr_tMapPoint = new ArrayList<TMapPoint>();
         arr_tMapCircle = new ArrayList<TMapCircle>();
-    }
-
-    /**
-     * getArriveInfo
-     * 길 찾기 에서 도착지를 받아온다
-     */
-    private void getArriveInfo() {
-        try {
-            Intent intent = getIntent();
-            try {
-                arrive = intent.getStringExtra("arrivePoint");
-                String temp[] = arrive.split(" ");
-                double latitude = Double.parseDouble(temp[1]);
-                double longitude = Double.parseDouble(temp[3]);
-                arrivePoint = new TMapPoint(latitude, longitude); // 도착지 포인트
-            } catch (Exception e) {
-                Log.e(TAG, "get arrivePoint error");
-            }
-
-            double pass_latitude = intent.getDoubleExtra("near_latitude", 0);
-            double pass_Longitude = intent.getDoubleExtra("near_longitude", 0);
-            passPoint = new TMapPoint(pass_latitude, pass_Longitude); //경유지 포인트
-
-        } catch (Exception e) {
-            Log.e(TAG, "getArriveInfo error");
-            e.printStackTrace();
-        }
     }
 
     private void tMapInit() {
@@ -280,6 +260,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View nav_header = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        profile_img = (ImageView)nav_header.findViewById(R.id.header_profile_image);
+        profile_name = (TextView)nav_header.findViewById(R.id.header_profile_text);
+
+        //네비게이션 프로필
+        Glide.with(MainActivity.this)
+                .load(BasicValue.getInstance().getProfile_img())
+                .skipMemoryCache(true)
+                .error(R.drawable.default_profile)
+                .bitmapTransform(new CropCircleTransformation(Glide.get(MainActivity.this).getBitmapPool())).into(profile_img);
+        profile_name.setText(BasicValue.getInstance().getProfile_name());
     }
 
     /**
@@ -312,14 +304,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDialog.onOnSetItemClickListener(new ListViewDialog.ListViewDialogSelectListener() {
             @Override
             public void onSetOnItemClickListener(int position) {
-                if (position == 0) {
-                    Intent intent = new Intent(MainActivity.this, FindRoadActivity.class);
-                    startActivity(intent);
-                } else if (position == 1) {
-                    Intent intent = new Intent(MainActivity.this, NearbyActivity.class);
-                    startActivity(intent);
-                } else if (position == 2) {
-                    Log.v(TAG, " 세번째 인덱스가 선택되었습니다");
+                switch (position){
+                    case 0:
+                        startActivity(new Intent(MainActivity.this,FindRoadActivity.class));
+                        break;
+                    case 1:
+                        startActivity( new Intent(MainActivity.this, NearbyActivity.class));
+                        break;
+                    case 2:
+                        startActivity(new Intent(MainActivity.this,SettingActivity.class));
+                        break;
                 }
                 mDialog.dismiss();
             }
@@ -344,12 +338,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             try {
                 setCircle(tmapPointArr.gettMapPointArr());
 
-                //사고다발지역 표시 여부가 true라면
-                Log.d(TAG, "accident :" + BasicValue.getInstance().isAccident());
-                if (BasicValue.getInstance().isAccident()) {
-                    for (int i = 0; i < arr_tMapCircle.size(); i++) {
-                        mapView.addTMapCircle("circle" + i, arr_tMapCircle.get(i));
-                    }
+                for (int i = 0; i < arr_tMapCircle.size(); i++) {
+                    mapView.addTMapCircle("circle" + i, arr_tMapCircle.get(i));
                 }
             }catch (NullPointerException e){Log.e(TAG,"TmapCircle error :"+e.getMessage());}
         }
@@ -374,6 +364,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getArriveInfo();
         if (arrivePoint != null || passPoint.getLatitude() != 0.0) {
             setPath();
+        }
+    }
+    /**
+     * getArriveInfo
+     * 길 찾기 에서 도착지를 받아온다
+     */
+    private void getArriveInfo() {
+        try {
+            Intent intent = getIntent();
+            try {
+                arrive = intent.getStringExtra("arrivePoint");
+                String temp[] = arrive.split(" ");
+                double latitude = Double.parseDouble(temp[1]);
+                double longitude = Double.parseDouble(temp[3]);
+                arrivePoint = new TMapPoint(latitude, longitude); // 도착지 포인트
+            } catch (Exception e) {
+                Log.e(TAG, "get arrivePoint error");
+            }
+
+            double pass_latitude = intent.getDoubleExtra("near_latitude", 0);
+            double pass_Longitude = intent.getDoubleExtra("near_longitude", 0);
+            passPoint = new TMapPoint(pass_latitude, pass_Longitude); //경유지 포인트
+
+        } catch (Exception e) {
+            Log.d(TAG, "getArriveInfo error");
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.removeAllTMapCircle();
+        //사고다발지역 표시 여부가 true라면
+        Log.d(TAG, "accident :" + BasicValue.getInstance().isAccident());
+        if (BasicValue.getInstance().isAccident()) {
+            Handler handler = new AccidentReceiveHandler();
+            Thread thread = new AccidentThread(handler, MainActivity.this);
+            thread.start();
         }
     }
 }

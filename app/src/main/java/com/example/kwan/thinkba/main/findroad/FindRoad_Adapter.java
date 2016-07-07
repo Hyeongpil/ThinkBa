@@ -64,7 +64,8 @@ public class FindRoad_Adapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.findload_listview_item,null);
 
-            holder.poiname = (TextView)convertView.findViewById(R.id.POI_Name);
+            holder.poi_name = (TextView)convertView.findViewById(R.id.POI_Name);
+            holder.poi_adress = (TextView)convertView.findViewById(R.id.POI_address);
 
             convertView.setTag(holder);
 
@@ -81,11 +82,13 @@ public class FindRoad_Adapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
         POI_Data poi_data = mListData.get(position);
-        holder.poiname.setText(poi_data.poiname);
+        holder.poi_name.setText(poi_data.poiname);
+        holder.poi_adress.setText(poi_data.address);
         return convertView;
     }
 
     private class ViewHolder{
-        public TextView poiname;
+        public TextView poi_name;
+        public TextView poi_adress;
     }
 }

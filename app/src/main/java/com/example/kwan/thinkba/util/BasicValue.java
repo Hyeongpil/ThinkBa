@@ -11,6 +11,8 @@ public class BasicValue {
     private boolean accident;
     private boolean accident_alarm;
     private boolean robber;
+    private String profile_img;
+    private String profile_name;
 
     public static BasicValue getInstance(){return ourInstance;}
     private BasicValue(){}
@@ -26,4 +28,10 @@ public class BasicValue {
 
     public boolean isRobber() {return robber;}
     public void setRobber(boolean robber) {this.robber = robber;}
+
+    public String getProfile_img() {return profile_img;}
+    public void setProfile_img(String profile_img) {this.profile_img = profile_img;}
+
+    public String getProfile_name() {return profile_name;}
+    public void setProfile_name(String profile_name) {this.profile_name = profile_name;}
 }

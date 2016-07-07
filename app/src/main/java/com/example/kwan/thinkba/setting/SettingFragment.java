@@ -52,12 +52,12 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         SharedPreferences pref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
-        if(key.equals(AUTO_LOGIN)){
-            editor.putBoolean("autoLogin",sharedPreferences.getBoolean(AUTO_LOGIN,false));
-            BasicValue.getInstance().setAutoLogin(sharedPreferences.getBoolean(AUTO_LOGIN,false));
-            editor.commit();
-            Log.d(TAG,"basicvalue 값 :"+BasicValue.getInstance().isAutoLogin());
-        }
+//        if(key.equals(AUTO_LOGIN)){
+//            editor.putBoolean("autoLogin",sharedPreferences.getBoolean(AUTO_LOGIN,false));
+//            BasicValue.getInstance().setAutoLogin(sharedPreferences.getBoolean(AUTO_LOGIN,false));
+//            editor.commit();
+//            Log.d(TAG,"basicvalue 값 :"+BasicValue.getInstance().isAutoLogin());
+//        }
         if(key.equals(ACCIDENT)){
             editor.putBoolean("accident",sharedPreferences.getBoolean(ACCIDENT,false));
             BasicValue.getInstance().setAccident(sharedPreferences.getBoolean(ACCIDENT,false));

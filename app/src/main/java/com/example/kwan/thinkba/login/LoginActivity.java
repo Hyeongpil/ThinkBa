@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
  */
 public class LoginActivity extends Activity {
     final static String TAG = "LoginActivity";
+    SharedPreferences sp;
 
     private SessionCallback callback;      //콜백 선언
     @Bind(R.id.login_layout) FrameLayout login_layout;
@@ -38,6 +39,7 @@ public class LoginActivity extends Activity {
         Session.getCurrentSession().addCallback(callback);
 
         getSetting();
+        autologin();
     }
 
     /**
@@ -45,11 +47,15 @@ public class LoginActivity extends Activity {
      * 설정 페이지의 설정 값을 세팅
      */
     private void getSetting(){
-        SharedPreferences sp = getSharedPreferences("pref",MODE_PRIVATE);
-        BasicValue.getInstance().setAutoLogin(sp.getBoolean("autoLogin",false));
+        sp = getSharedPreferences("pref",MODE_PRIVATE);
+//        BasicValue.getInstance().setAutoLogin(sp.getBoolean("autoLogin",false));
         BasicValue.getInstance().setAccident(sp.getBoolean("accident",false));
         BasicValue.getInstance().setAccident_alarm(sp.getBoolean("accident_alarm",false));
         BasicValue.getInstance().setRobber(sp.getBoolean("robber",false));
+    }
+    private void autologin(){
+        if(sp.getBoolean("autoLogin",false)){
+        }
     }
 
     /**

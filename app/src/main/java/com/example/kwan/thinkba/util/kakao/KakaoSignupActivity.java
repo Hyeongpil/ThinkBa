@@ -2,11 +2,13 @@ package com.example.kwan.thinkba.util.kakao;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.kwan.thinkba.login.LoginActivity;
 import com.example.kwan.thinkba.main.MainActivity;
+import com.example.kwan.thinkba.util.BasicValue;
 import com.kakao.auth.ErrorCode;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
@@ -58,12 +60,18 @@ public class KakaoSignupActivity extends Activity{
             @Override
             public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
                 Log.e(TAG,"getUserProfile :"+userProfile);
+                BasicValue.getInstance().setProfile_img(userProfile.getProfileImagePath());
+                BasicValue.getInstance().setProfile_name(userProfile.getNickname());
                 redirectMainActivity(); // 로그인 성공시 MainActivity로
             }
         });
     }
 
     private void redirectMainActivity() {
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("autoLogin", true);
+        editor.commit();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }

@@ -51,8 +51,7 @@ public class AccidentThread extends Thread {
         try {
             apiKey = java.net.URLDecoder.decode(temp_api, "UTF-8");
         }catch (Exception e){Log.e(TAG,"인코딩 오류 :"+e.getMessage());}
-        Log.e(TAG,"스레드 진입");
-
+        Log.d(TAG,"스레드 진입");
 
         Retrofit client = new Retrofit.Builder().baseUrl("http://taas.koroad.or.kr/data/").addConverterFactory(GsonConverterFactory.create()).build();
         Repo.ApiInterface service = client.create(Repo.ApiInterface.class);
