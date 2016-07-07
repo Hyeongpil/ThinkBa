@@ -21,12 +21,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.kwan.thinkba.main.findroad.FindRoadActivity;
 import com.example.kwan.thinkba.login.LoginActivity;
 import com.example.kwan.thinkba.main.nearby.NearbyActivity;
@@ -306,7 +304,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onSetOnItemClickListener(int position) {
                 switch (position){
                     case 0:
-                        startActivity(new Intent(MainActivity.this,FindRoadActivity.class));
+                        Intent intent = new Intent(MainActivity.this,FindRoadActivity.class);
+                        intent.putExtra("startPoint",startPoint.toString());
+                        startActivity(intent);
                         break;
                     case 1:
                         startActivity( new Intent(MainActivity.this, NearbyActivity.class));

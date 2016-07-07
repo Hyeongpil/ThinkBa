@@ -12,4 +12,8 @@ public class POI_Data {
     public String address;
     //위치
     public String point;
+    //거리
+    public String distanceStr;
+    //거리 더블
+    public Double distance;
 }
