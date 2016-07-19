@@ -38,8 +38,13 @@
         </activity>
         <activity android:name=".util.kakao.KakaoSignupActivity">
         </activity>
-        <activity android:name=".setting.SettingActivity">
+        <activity android:name=".navigation.SettingActivity">
         </activity>
+        <activity android:name=".navigation.MyPageActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".navigation.ArchiveActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
     </application>
 

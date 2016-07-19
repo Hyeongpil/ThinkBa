@@ -4,39 +4,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.example.kwan.thinkba.R;
 import com.example.kwan.thinkba.main.findroad.FindRoadActivity;
-import com.example.kwan.thinkba.login.LoginActivity;
 import com.example.kwan.thinkba.main.nearby.NearbyActivity;
-import com.example.kwan.thinkba.setting.SettingActivity;
+import com.example.kwan.thinkba.model.BaseNavigationActivity;
+import com.example.kwan.thinkba.model.TmapPointArr;
+import com.example.kwan.thinkba.navigation.SettingActivity;
 import com.example.kwan.thinkba.util.BasicValue;
 import com.example.kwan.thinkba.util.GpsInfo;
 import com.example.kwan.thinkba.util.ListViewDialog;
-import com.example.kwan.thinkba.R;
-import com.example.kwan.thinkba.model.TmapPointArr;
 import com.example.kwan.thinkba.util.retrofit.AccidentThread;
-import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.skp.Tmap.TMapCircle;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapGpsManager;
@@ -51,10 +37,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TMapGpsManager.onLocationChangedCallback {
+public class MainActivity extends BaseNavigationActivity implements TMapGpsManager.onLocationChangedCallback {
     final static String TAG = "MainActivity";
     Context mContext;
     TMapGpsManager gps = null;
@@ -72,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.mapMenu) Button mapMenuBtn;
     @Bind(R.id.tracking) Button trackingBtn;
     @Bind(R.id.deletePath) Button deletePathBtn;
-    ImageView profile_img;
-    TextView profile_name;
 
     double latitude; //위도
     double longitude; // 경도
@@ -87,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        naviDrawerInit();
+
+        super.naviDrawerInit();
 
         tMapGps();
         tMapInit();
@@ -198,79 +182,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mapView.setTrackingMode(m_bTrackingMode);
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        switch (id) {
-            case (R.id.nav_myinfo):
-                break;
-            case (R.id.nav_archive):
-                break;
-            case (R.id.nav_setting):
-                Intent setting_intent = new Intent(this,SettingActivity.class);
-                startActivity(setting_intent);
-                break;
-            case (R.id.nav_logout):
-                UserManagement.requestLogout(new LogoutResponseCallback() {
-                    @Override
-                    public void onCompleteLogout() {
-                        Toast.makeText(MainActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                Intent out_intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(out_intent);
-                finish();
-                break;
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
-        drawer.closeDrawers();
-        return true;
-    }
-
-    private void naviDrawerInit() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        View nav_header = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        profile_img = (ImageView)nav_header.findViewById(R.id.header_profile_image);
-        profile_name = (TextView)nav_header.findViewById(R.id.header_profile_text);
-
-        //네비게이션 프로필
-        Glide.with(MainActivity.this)
-                .load(BasicValue.getInstance().getProfile_img())
-                .skipMemoryCache(true)
-                .error(R.drawable.default_profile)
-                .bitmapTransform(new CropCircleTransformation(Glide.get(MainActivity.this).getBitmapPool())).into(profile_img);
-        profile_name.setText(BasicValue.getInstance().getProfile_name());
-    }
 
     /**
      * nowClickListener

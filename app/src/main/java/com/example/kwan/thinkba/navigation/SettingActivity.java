@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.setting;
+package com.example.kwan.thinkba.navigation;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

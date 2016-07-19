@@ -1,4 +1,4 @@
-package com.example.kwan.thinkba.setting;
+package com.example.kwan.thinkba.navigation;
 
 import android.content.Context;
 import android.content.SharedPreferences;
