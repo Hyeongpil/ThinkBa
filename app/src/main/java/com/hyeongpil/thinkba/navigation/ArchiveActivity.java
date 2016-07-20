@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.model.ArchiveModel;
 
@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 /**
  * Created by hp on 2016. 7. 18..
  */
-public class ArchiveActivity extends AppCompatActivity{
+public class ArchiveActivity extends BaseGameActivity{
 
     private ArrayList<ArchiveModel> archiveList;
     private Archive_Adapter adapter;
@@ -120,6 +120,8 @@ public class ArchiveActivity extends AppCompatActivity{
             }
         });
     }
+
+
     /**
      * RecyclerView item decoration - give equal margin around grid item
      */
@@ -163,6 +165,15 @@ public class ArchiveActivity extends AppCompatActivity{
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+    @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
     }
 
 
