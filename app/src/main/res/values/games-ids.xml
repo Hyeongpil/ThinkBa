@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <string name="app_id">863373660404</string>
+    <string name="package_name">com.hyeongpil.thinkba</string>
+    <string name="achievement_thinkba_people">CgkI9KHSqJAZEAIQAQ</string>
+    <string name="achievement_target_capture">CgkI9KHSqJAZEAIQAg</string>
+    <string name="achievement_heros_never_die">CgkI9KHSqJAZEAIQAw</string>
+    <string name="achievement_hate_but_retry">CgkI9KHSqJAZEAIQBA</string>
+    <string name="achievement_dont_starve">CgkI9KHSqJAZEAIQBQ</string>
+    <string name="leaderboard_distance">CgkI9KHSqJAZEAIQBg</string>
+</resources>
