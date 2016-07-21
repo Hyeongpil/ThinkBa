@@ -1,4 +1,4 @@
-package com.hyeongpil.thinkba.model;
+package com.hyeongpil.thinkba.util.model;
 
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
@@ -15,12 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.login.LoginActivity;
-import com.hyeongpil.thinkba.navigation.ArchiveActivity;
 import com.hyeongpil.thinkba.navigation.MyPageActivity;
 import com.hyeongpil.thinkba.navigation.SettingActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
+import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
@@ -32,6 +34,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 public class BaseNavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ImageView profile_img;
     TextView profile_name;
+    private GoogleApiClient mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
 
 
     @Override
@@ -60,13 +63,19 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
             case (R.id.nav_myinfo):
                 startActivity(new Intent(BaseNavigationActivity.this, MyPageActivity.class));
                 break;
+
             case (R.id.nav_archive):
-                startActivity(new Intent(BaseNavigationActivity.this, ArchiveActivity.class));
+//                startActivity(new Intent(BaseNavigationActivity.this, ArchiveActivity.class));
+                if(mGoogleApiClient.isConnected()){
+                    startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), 124);
+                }else {Toast.makeText(BaseNavigationActivity.this, "구글 게임 연동이 실패하였습니다 다시 로그인 해 주세요", Toast.LENGTH_SHORT).show();}
                 break;
+
             case (R.id.nav_setting):
                 Intent setting_intent = new Intent(this,SettingActivity.class);
                 startActivity(setting_intent);
                 break;
+
             case (R.id.nav_logout):
                 UserManagement.requestLogout(new LogoutResponseCallback() {
                     @Override
@@ -74,6 +83,12 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
                         Toast.makeText(BaseNavigationActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
+                if(GlobalApplication.getInstance().getmGoogleApiClient().isConnected()) {
+                    Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hate_but_retry));
+                }
+                //구글 로그아웃
+                Games.signOut(mGoogleApiClient);
+                mGoogleApiClient.disconnect();
                 Intent out_intent = new Intent(BaseNavigationActivity.this, LoginActivity.class);
                 startActivity(out_intent);
                 finish();

@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.hyeongpil.thinkba.R;
-import com.hyeongpil.thinkba.util.POI_Data;
+import com.hyeongpil.thinkba.util.model.POI_Data;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapPOIItem;
 import com.skp.Tmap.TMapPoint;

@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.hyeongpil.thinkba.R;
-import com.hyeongpil.thinkba.util.POI_Data;
+import com.hyeongpil.thinkba.util.model.POI_Data;
 
 import java.util.List;
 

@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.hyeongpil.thinkba.model.TmapPointArr;
+import com.hyeongpil.thinkba.util.model.TmapPointArr;
 import com.skp.Tmap.TMapPoint;
 
 import java.util.ArrayList;

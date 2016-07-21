@@ -9,7 +9,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.google.android.gms.games.Games;
 import com.hyeongpil.thinkba.R;
+import com.hyeongpil.thinkba.login.LoginActivity;
+import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.hyeongpil.thinkba.util.GpsInfo;
 import com.hyeongpil.thinkba.util.daum_search.Item;
 import com.hyeongpil.thinkba.util.daum_search.OnFinishSearchListener;
@@ -35,6 +38,7 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     final static String TAG = "NearbyActivity";
     String apiKey = "965df1f1c4824c1f097710f996cc5de2";
     Nearby_Adapter nearby_adapter;
+    LoginActivity loginActivity;
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
     LinearLayout nearby_maplayout;
@@ -57,6 +61,15 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         setTitle("주변 검색");
         ButterKnife.bind(this);
 
+        init();
+
+
+
+        daumMapinit();
+
+    }
+    private void init(){
+        loginActivity = new LoginActivity();
         super_btn.setOnClickListener(this);
         hospital_btn.setOnClickListener(this);
         hotel_btn.setOnClickListener(this);
@@ -65,9 +78,6 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         nearby_adapter = new Nearby_Adapter(NearbyActivity.this);
         ((ListView)findViewById(R.id.nearby_listview)).setAdapter(nearby_adapter);
         nearby_maplayout = (LinearLayout)findViewById(R.id.nearby_mapview);
-
-        daumMapinit();
-
     }
 
     private void daumMapinit(){
@@ -76,11 +86,15 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
             latitude = gpsInfo.getLatitude();
             longitude = gpsInfo.getLongitude();
         }
-        mapView = new MapView(this);
-        mapView.setDaumMapApiKey(apiKey);
-        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude),-1, true); // 현재위치로, 줌 설정
-        moveCamera(latitude,longitude);
-        nearby_maplayout.addView(mapView);
+        try {
+            mapView = new MapView(this);
+            mapView.setDaumMapApiKey(apiKey);
+            mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude),-1, true); // 현재위치로, 줌 설정
+            moveCamera(latitude,longitude);
+            nearby_maplayout.addView(mapView);
+        } catch (Exception e) {
+            Log.e(TAG,"다음 지도 인증 오류 :"+e.getMessage());
+        }
     }
 
     /**
@@ -168,12 +182,18 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
                break;
             case R.id.hospital_btn:
                 search("병원");
+                try {
+                    Games.Achievements.unlock(GlobalApplication.getInstance().getmGoogleApiClient(), getString(R.string.achievement_heros_never_die));
+                }catch (IllegalStateException e){Log.e(TAG,"구글 연결 안됨");}
                 break;
             case R.id.hotel_btn:
                 search("숙박");
                 break;
             case R.id.food_btn:
                 search("음식점");
+                try {
+                    Games.Achievements.unlock(GlobalApplication.getInstance().getmGoogleApiClient(), getString(R.string.achievement_dont_starve));
+                }catch (IllegalStateException e){Log.e(TAG,"구글 연결 안됨");}
                 break;
             case R.id.leisure_btn:
                 search("관광명소");

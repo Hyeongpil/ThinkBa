@@ -1,4 +1,4 @@
-package com.hyeongpil.thinkba.model;
+package com.hyeongpil.thinkba.util.model;
 
 /**
  * Created by hp on 2016. 7. 19..

@@ -1,13 +1,15 @@
 package com.hyeongpil.thinkba.login;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.util.BasicValue;
+import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.hyeongpil.thinkba.util.kakao.KakaoSignupActivity;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -20,7 +22,7 @@ import butterknife.ButterKnife;
 /**
  * Created by hp on 2016-04-17.
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseGameActivity {
     final static String TAG = "LoginActivity";
     SharedPreferences sp;
 
@@ -52,6 +54,7 @@ public class LoginActivity extends Activity {
         BasicValue.getInstance().setAccident_alarm(sp.getBoolean("accident_alarm",false));
         BasicValue.getInstance().setRobber(sp.getBoolean("robber",false));
     }
+
     private void autologin(){
         if(sp.getBoolean("autoLogin",false)){
         }
@@ -87,5 +90,16 @@ public class LoginActivity extends Activity {
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onSignInFailed() {
+        Log.e(TAG,"구글 로그인 실패");
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+        Log.e(TAG,"구글 로그인 성공");
+        GlobalApplication.getInstance().connGoogleApiClient();
     }
 }

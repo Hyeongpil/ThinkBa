@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hyeongpil.thinkba.R;
-import com.hyeongpil.thinkba.model.ArchiveModel;
+import com.hyeongpil.thinkba.util.model.ArchiveModel;
 
 import java.util.ArrayList;
 

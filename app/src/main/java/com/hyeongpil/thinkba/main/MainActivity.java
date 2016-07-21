@@ -16,12 +16,13 @@ import android.widget.Toast;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.main.findroad.FindRoadActivity;
 import com.hyeongpil.thinkba.main.nearby.NearbyActivity;
-import com.hyeongpil.thinkba.model.BaseNavigationActivity;
-import com.hyeongpil.thinkba.model.TmapPointArr;
 import com.hyeongpil.thinkba.navigation.SettingActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
+import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.hyeongpil.thinkba.util.GpsInfo;
 import com.hyeongpil.thinkba.util.ListViewDialog;
+import com.hyeongpil.thinkba.util.model.BaseNavigationActivity;
+import com.hyeongpil.thinkba.util.model.TmapPointArr;
 import com.hyeongpil.thinkba.util.retrofit.AccidentThread;
 import com.skp.Tmap.TMapCircle;
 import com.skp.Tmap.TMapData;
@@ -314,5 +315,12 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
             Thread thread = new AccidentThread(handler, MainActivity.this);
             thread.start();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG,"구글 연결 해제");
+        GlobalApplication.getInstance().getmGoogleApiClient().disconnect();
     }
 }

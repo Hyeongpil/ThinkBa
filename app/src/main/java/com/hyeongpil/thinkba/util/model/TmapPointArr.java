@@ -1,4 +1,4 @@
-package com.hyeongpil.thinkba.model;
+package com.hyeongpil.thinkba.util.model;
 
 import com.skp.Tmap.TMapPoint;
 
