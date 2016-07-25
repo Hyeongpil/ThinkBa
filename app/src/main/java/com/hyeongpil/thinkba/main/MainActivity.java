@@ -26,6 +26,7 @@ import com.hyeongpil.thinkba.util.GpsInfo;
 import com.hyeongpil.thinkba.util.ListViewDialog;
 import com.hyeongpil.thinkba.util.model.TmapPointArr;
 import com.hyeongpil.thinkba.util.retrofit.AccidentThread;
+import com.hyeongpil.thinkba.util.retrofit.WeatherThread;
 import com.skp.Tmap.TMapCircle;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapGpsManager;
@@ -78,6 +79,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
 
         tMapGps();
         tMapInit();
+        weatherInit();
     }
 
     private void init(){
@@ -99,7 +101,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
             startPoint = new TMapPoint(latitude, longitude);
         }
         mapView = new TMapView(this); // 지도 위도, 경도, 줌레벨
-        mapView.setSKPMapApiKey("d5c4630e-a1ac-3ddc-8417-03e1bf83e1b4");
+        mapView.setSKPMapApiKey(getString(R.string.skplanet_key));
         mapView.setTrackingMode(m_bTrackingMode); // 트래킹 모드 사용
         mapView.setZoomLevel(16);
 //        mapView.setBicycleInfo(true);//자전거 도로 표시
@@ -110,6 +112,11 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         mapView.setTMapLogoPosition(TMapView.TMapLogoPositon.POSITION_BOTTOMLEFT);
 
         mapLayout.addView(mapView);
+    }
+    private void weatherInit(){
+        Handler handler = new WeatherReceiveHandler();
+        Thread weatherThread = new WeatherThread(handler, MainActivity.this, latitude, longitude);
+        weatherThread.start();
     }
 
     /**
@@ -247,22 +254,6 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
     @OnClick(R.id.deletePath)
     void deletePath_btnClick(View view){mapView.removeTMapPath();}
 
-    private class AccidentReceiveHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            tmapPointArr = (TmapPointArr) msg.getData().getSerializable("THREAD"); // 스레드에서 tMapPointArr를 받음
-
-            try {
-                setCircle(tmapPointArr.gettMapPointArr());
-
-                for (int i = 0; i < arr_tMapCircle.size(); i++) {
-                    mapView.addTMapCircle("circle" + i, arr_tMapCircle.get(i));
-                }
-            }catch (NullPointerException e){Log.e(TAG,"TmapCircle error :"+e.getMessage());}
-        }
-    }
-
     private List<TMapCircle> setCircle(ArrayList<TMapPoint> tMapPointArr) {
         for(int i = 0; i < tMapPointArr.size(); i++){
             TMapPoint tempPoint = tMapPointArr.get(i);
@@ -318,8 +309,8 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         Log.d(TAG, "accident :" + BasicValue.getInstance().isAccident());
         if (BasicValue.getInstance().isAccident()) {
             Handler handler = new AccidentReceiveHandler();
-            Thread thread = new AccidentThread(handler, MainActivity.this);
-            thread.start();
+            Thread accidentThread = new AccidentThread(handler, MainActivity.this);
+            accidentThread.start();
         }
     }
 
@@ -349,4 +340,27 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
             Toast.makeText(MainActivity.this, "구글 게임 연동이 실패하였습니다 다시 로그인 해 주세요", Toast.LENGTH_SHORT).show();
         }}catch (NullPointerException e){}
     }
+    private class AccidentReceiveHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            tmapPointArr = (TmapPointArr) msg.getData().getSerializable("THREAD"); // 스레드에서 tMapPointArr를 받음
+
+            try {
+                setCircle(tmapPointArr.gettMapPointArr());
+
+                for (int i = 0; i < arr_tMapCircle.size(); i++) {
+                    mapView.addTMapCircle("circle" + i, arr_tMapCircle.get(i));
+                }
+            }catch (NullPointerException e){Log.e(TAG,"TmapCircle error :"+e.getMessage());}
+        }
+    }
+    private class WeatherReceiveHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+        }
+    }
+
 }

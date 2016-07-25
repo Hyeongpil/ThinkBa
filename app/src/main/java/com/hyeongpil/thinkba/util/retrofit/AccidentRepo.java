@@ -3,8 +3,8 @@ package com.hyeongpil.thinkba.util.retrofit;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -25,6 +25,7 @@ public class AccidentRepo implements Serializable {
     public searchResult getSearchResult() {return searchResult;}
 
     public class searchResult {
+
         private List<frequentzone> frequentzone = new ArrayList<>();
 
         public List<frequentzone> getFrequentzone() {return frequentzone;}

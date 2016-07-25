@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.hyeongpil.thinkba.util.BasicValue;
 import com.hyeongpil.thinkba.util.model.TmapPointArr;
 import com.skp.Tmap.TMapPoint;
 
@@ -31,7 +32,6 @@ public class AccidentThread extends Thread {
     Context mContext;
 
     String apiKey;
-    String temp_api ="uL50TuF8qdaxAAHQ5sXWvvPIO9VMNSToveE9ROkc8NdWfKj1ezFodcJM9BJbAuy%2B";
     int searchYearCd = 2015046; //14년
     String sido = ""; // 공백 시 전체 선택
     String gugun = "";
@@ -46,11 +46,7 @@ public class AccidentThread extends Thread {
     @Override
     public void run() {
         super.run();
-
-        try {
-            apiKey = java.net.URLDecoder.decode(temp_api, "UTF-8");
-        }catch (Exception e){Log.e(TAG,"인코딩 오류 :"+e.getMessage());}
-        Log.d(TAG,"스레드 진입");
+        apiKey = BasicValue.getInstance().getTaas_key();
 
         Retrofit client = new Retrofit.Builder().baseUrl("http://taas.koroad.or.kr/data/").addConverterFactory(GsonConverterFactory.create()).build();
         AccidentRepo.AccidentApiInterface service = client.create(AccidentRepo.AccidentApiInterface.class);
