@@ -1,4 +1,4 @@
-package com.hyeongpil.thinkba.util.model;
+package com.hyeongpil.thinkba.util;
 
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
@@ -21,8 +21,6 @@ import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.login.LoginActivity;
 import com.hyeongpil.thinkba.navigation.MyPageActivity;
 import com.hyeongpil.thinkba.navigation.SettingActivity;
-import com.hyeongpil.thinkba.util.BasicValue;
-import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 
@@ -32,10 +30,10 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  * Created by hp on 2016. 7. 18.
  */
 public class BaseNavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    final static String TAG = "BaseNavigationActivity";
     ImageView profile_img;
     TextView profile_name;
     private GoogleApiClient mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
-
 
     @Override
     public void onBackPressed() {
@@ -83,13 +81,9 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
                         Toast.makeText(BaseNavigationActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
-                if(GlobalApplication.getInstance().getmGoogleApiClient().isConnected()) {
-                    Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hate_but_retry));
-                }
-                //구글 로그아웃
-                Games.signOut(mGoogleApiClient);
-                mGoogleApiClient.disconnect();
+
                 Intent out_intent = new Intent(BaseNavigationActivity.this, LoginActivity.class);
+                out_intent.putExtra("logout","logout");
                 startActivity(out_intent);
                 finish();
                 break;

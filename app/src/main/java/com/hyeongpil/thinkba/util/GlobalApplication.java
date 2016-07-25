@@ -8,7 +8,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
-import com.hyeongpil.thinkba.util.kakao.KakaoSDKAdapter;
+import com.hyeongpil.thinkba.login.kakao.KakaoSDKAdapter;
 import com.kakao.auth.KakaoSDK;
 
 /**

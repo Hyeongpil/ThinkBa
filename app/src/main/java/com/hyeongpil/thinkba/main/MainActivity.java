@@ -9,19 +9,21 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.main.findroad.FindRoadActivity;
 import com.hyeongpil.thinkba.main.nearby.NearbyActivity;
 import com.hyeongpil.thinkba.navigation.SettingActivity;
+import com.hyeongpil.thinkba.util.BaseNavigationActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
 import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.hyeongpil.thinkba.util.GpsInfo;
 import com.hyeongpil.thinkba.util.ListViewDialog;
-import com.hyeongpil.thinkba.util.model.BaseNavigationActivity;
 import com.hyeongpil.thinkba.util.model.TmapPointArr;
 import com.hyeongpil.thinkba.util.retrofit.AccidentThread;
 import com.skp.Tmap.TMapCircle;
@@ -54,10 +56,9 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
 
     TMapView mapView;
     FrameLayout mapLayout;
-    @Bind(R.id.nowLocation) Button nowLocationBtn;
-    @Bind(R.id.mapMenu) Button mapMenuBtn;
-    @Bind(R.id.tracking) Button trackingBtn;
-    @Bind(R.id.deletePath) Button deletePathBtn;
+    @Bind(R.id.main_achieve) FrameLayout achieve_popup;
+    @Bind(R.id.main_speed)
+    TextView tv_speed;
 
     double latitude; //위도
     double longitude; // 경도
@@ -65,6 +66,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
 
     private boolean m_bTrackingMode = false;
     private com.hyeongpil.thinkba.util.ListViewDialog mDialog;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,6 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
 
         tMapGps();
         tMapInit();
-
     }
 
     private void init(){
@@ -85,6 +86,8 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         mapLayout = (FrameLayout)findViewById(R.id.mapLayout);
         arr_tMapPoint = new ArrayList<TMapPoint>();
         arr_tMapCircle = new ArrayList<TMapCircle>();
+        mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
+        setAchievement();
     }
 
     private void tMapInit() {
@@ -104,6 +107,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
         mapView.setLocationPoint(longitude, latitude); // 지도 현재 좌표 설정
         mapView.setCenterPoint(longitude, latitude); // 지도 현재 위치로
+        mapView.setTMapLogoPosition(TMapView.TMapLogoPositon.POSITION_BOTTOMLEFT);
 
         mapLayout.addView(mapView);
     }
@@ -164,6 +168,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         Log.d(TAG, "onLocationChange " + location.getLatitude() + " " + location.getLongitude() + " " + location.getSpeed() + " " + location.getAccuracy());
+        tv_speed.setText(String.valueOf(location.getSpeed())+" km");
         if (m_bTrackingMode) {
             mapView.setLocationPoint(location.getLongitude(), location.getLatitude());
         }
@@ -199,6 +204,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
                 mapView.setCenterPoint(longitude, latitude);
                 //Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.map_pin_red);
                 //mapView.setIcon(bitmap);
+                Games.Achievements.unlock(GlobalApplication.getInstance().getmGoogleApiClient(),getString(R.string.achievement_target_capture));
             } else {
                 Toast.makeText(MainActivity.this, "GPS 연동 실패", Toast.LENGTH_SHORT).show();
             }
@@ -321,6 +327,26 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
     protected void onDestroy() {
         super.onDestroy();
         Log.e(TAG,"구글 연결 해제");
-        GlobalApplication.getInstance().getmGoogleApiClient().disconnect();
+        mGoogleApiClient.disconnect();
+    }
+
+    /**
+     * 로그인 카운트를 받아 업적을 띄워준다.
+     */
+    private void setAchievement(){
+        Games.setViewForPopups(mGoogleApiClient,achieve_popup);
+        int loginCount = getIntent().getIntExtra("loginCount",0); // 카카오 사인업 액티비티에서 받음
+        Log.d(TAG,"loginCount :"+loginCount);
+        try{if(mGoogleApiClient.isConnected()) {
+            if (loginCount == 1) {
+                Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_thinkba_people), 1);
+            } else if (loginCount == 10) {
+                Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_thinkba_people), 2);
+            } else if (loginCount == 30) {
+                Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_thinkba_people), 3);
+            }
+        }else {
+            Toast.makeText(MainActivity.this, "구글 게임 연동이 실패하였습니다 다시 로그인 해 주세요", Toast.LENGTH_SHORT).show();
+        }}catch (NullPointerException e){}
     }
 }

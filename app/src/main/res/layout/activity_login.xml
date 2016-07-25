@@ -12,6 +12,13 @@
     android:weightSum="10"
     tools:context=".login.LoginActivity"
     android:id="@+id/login_layout">
+    <FrameLayout
+        android:id="@+id/login_achieve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
 
 
     <com.kakao.usermgmt.LoginButton

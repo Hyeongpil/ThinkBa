@@ -24,7 +24,7 @@ import retrofit2.Retrofit;
 public class AccidentThread extends Thread {
     final static String TAG = "AccidentThread";
     Handler handler;
-    Repo repo;
+    AccidentRepo accidentRepo;
     TmapPointArr tmapPointArr;
     ArrayList<TMapPoint> arr_TmapPoint;
 
@@ -53,17 +53,17 @@ public class AccidentThread extends Thread {
         Log.d(TAG,"스레드 진입");
 
         Retrofit client = new Retrofit.Builder().baseUrl("http://taas.koroad.or.kr/data/").addConverterFactory(GsonConverterFactory.create()).build();
-        Repo.ApiInterface service = client.create(Repo.ApiInterface.class);
-        Call<Repo> call = service.getretrofit(apiKey,searchYearCd,sido,gugun,death);
-        call.enqueue(new Callback<Repo>() {
+        AccidentRepo.AccidentApiInterface service = client.create(AccidentRepo.AccidentApiInterface.class);
+        Call<AccidentRepo> call = service.get_Accident_retrofit(apiKey,searchYearCd,sido,gugun,death);
+        call.enqueue(new Callback<AccidentRepo>() {
             @Override
-            public void onResponse(Call<Repo> call, Response<Repo> response) {
+            public void onResponse(Call<AccidentRepo> call, Response<AccidentRepo> response) {
                 if(response.isSuccessful()){
                     arr_TmapPoint = new ArrayList<TMapPoint>();
                     //사고다발지역 결과를 받아 repo로 Gson 양식으로 받음
-                    repo = response.body();
+                    accidentRepo = response.body();
                     Log.d(TAG,"response.raw :"+response.raw());
-                    List<Repo.searchResult.frequentzone> frequentzoneList = repo.getSearchResult().getFrequentzone();
+                    List<AccidentRepo.searchResult.frequentzone> frequentzoneList = accidentRepo.getSearchResult().getFrequentzone();
 
                     //받은 결과를 TMapPoint ArrayList로 저장
                     for(int i=0; i < frequentzoneList.size(); i++ ){
@@ -82,7 +82,7 @@ public class AccidentThread extends Thread {
                 }
             }
             @Override
-            public void onFailure(Call<Repo> call, Throwable t) {
+            public void onFailure(Call<AccidentRepo> call, Throwable t) {
                 Log.e(TAG,"taas 통신 실패 :"+t.getMessage());
             }
         });

@@ -6,13 +6,21 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".main.MainActivity"
-    tools:showIn="@layout/app_bar_main"
-    android:orientation="vertical">
+    tools:showIn="@layout/app_bar_main">
+
+    <FrameLayout
+        android:id="@+id/main_achieve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="450dp"
         android:orientation="vertical">
+
         <FrameLayout
             android:id="@+id/mapLayout"
             android:layout_width="wrap_content"
@@ -53,6 +61,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:text="메뉴" />
+
+        <TextView
+            android:id="@+id/main_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0km"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"/>
     </FrameLayout>
 
 </FrameLayout>

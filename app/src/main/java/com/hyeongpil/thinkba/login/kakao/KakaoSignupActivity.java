@@ -1,15 +1,12 @@
-package com.hyeongpil.thinkba.util.kakao;
+package com.hyeongpil.thinkba.login.kakao;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.games.Games;
-import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.login.LoginActivity;
 import com.hyeongpil.thinkba.main.MainActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
@@ -81,19 +78,10 @@ public class KakaoSignupActivity extends Activity{
         editor.putInt("loginCount",loginCount);
         editor.commit();
 
-        Log.d(TAG,"loginCount :"+loginCount);
-        try{if(mGoogleApiClient.isConnected()) {
-            if (loginCount == 1) {
-                Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_thinkba_people), 1);
-            } else if (loginCount == 10) {
-                Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_thinkba_people), 2);
-            } else if (loginCount == 30) {
-                Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_thinkba_people), 3);
-            }
-        }else {
-            Toast.makeText(KakaoSignupActivity.this, "구글 게임 연동이 실패하였습니다 다시 로그인 해 주세요", Toast.LENGTH_SHORT).show();
-        }}catch (NullPointerException e){}
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this,MainActivity.class);
+        intent.putExtra("loginCount",loginCount);
+
+        startActivity(intent);
         finish();
     }
 

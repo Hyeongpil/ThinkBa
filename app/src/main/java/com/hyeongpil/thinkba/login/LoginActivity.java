@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.hyeongpil.thinkba.R;
+import com.hyeongpil.thinkba.login.kakao.KakaoSignupActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
 import com.hyeongpil.thinkba.util.GlobalApplication;
-import com.hyeongpil.thinkba.util.kakao.KakaoSignupActivity;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.util.exception.KakaoException;
@@ -28,6 +29,7 @@ public class LoginActivity extends BaseGameActivity {
 
     private SessionCallback callback;      //콜백 선언
     @Bind(R.id.login_layout) FrameLayout login_layout;
+    @Bind(R.id.login_achieve) FrameLayout achieve_popup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +42,18 @@ public class LoginActivity extends BaseGameActivity {
         Session.getCurrentSession().addCallback(callback);
 
         getSetting();
+        getIntentData();
         autologin();
     }
 
+    private void getIntentData(){
+        try {
+            //로그아웃 시 업적 진입
+            if (getIntent().getStringExtra("logout").equals("logout")) { // BaseNavigationActivity 에서 받음
+                setAchievement();
+            }
+        }catch (NullPointerException e){}
+    }
     /**
      * getSetting
      * 설정 페이지의 설정 값을 세팅
@@ -50,12 +61,13 @@ public class LoginActivity extends BaseGameActivity {
     private void getSetting(){
         sp = getSharedPreferences("pref",MODE_PRIVATE);
 //        BasicValue.getInstance().setAutoLogin(sp.getBoolean("autoLogin",false));
-        BasicValue.getInstance().setAccident(sp.getBoolean("accident",false));
-        BasicValue.getInstance().setAccident_alarm(sp.getBoolean("accident_alarm",false));
-        BasicValue.getInstance().setRobber(sp.getBoolean("robber",false));
+        BasicValue.getInstance().setAccident(sp.getBoolean("accident",true));
+        BasicValue.getInstance().setAccident_alarm(sp.getBoolean("accident_alarm",true));
+        BasicValue.getInstance().setRobber(sp.getBoolean("robber",true));
     }
 
     private void autologin(){
+        // TODO: 2016. 7. 25. 자동 로그인 구현 해야함
         if(sp.getBoolean("autoLogin",false)){
         }
     }
@@ -101,5 +113,13 @@ public class LoginActivity extends BaseGameActivity {
     public void onSignInSucceeded() {
         Log.e(TAG,"구글 로그인 성공");
         GlobalApplication.getInstance().connGoogleApiClient();
+    }
+
+    /**
+     * 로그아웃 시 업적 진입
+     */
+    private void setAchievement(){
+        Games.setViewForPopups(GlobalApplication.getInstance().getmGoogleApiClient(),achieve_popup);
+        Games.Achievements.unlock(GlobalApplication.getInstance().getmGoogleApiClient(),getString(R.string.achievement_hate_but_retry));
     }
 }

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hyeongpil.thinkba.R;
-import com.hyeongpil.thinkba.util.model.BaseNavigationActivity;
+import com.hyeongpil.thinkba.util.BaseNavigationActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
 
 import butterknife.Bind;

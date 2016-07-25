@@ -13,7 +13,7 @@ import retrofit2.http.Query;
 /**
  * Created by hp on 2016-06-28.
  */
-public class Repo implements Serializable {
+public class AccidentRepo implements Serializable {
 
     @SerializedName("searchResult")
     private searchResult searchResult;
@@ -45,8 +45,8 @@ public class Repo implements Serializable {
         }
     }
 
-    public interface ApiInterface {
+    public interface AccidentApiInterface {
         @GET("rest/frequentzone/bicycle")
-        Call<Repo> getretrofit(@Query("authKey") String authKey, @Query("searchYearCd") int searchYearCd, @Query("sido") String sido, @Query("gugun") String gugun, @Query("DEATH") String DEATH);
+        Call<AccidentRepo> get_Accident_retrofit(@Query("authKey") String authKey, @Query("searchYearCd") int searchYearCd, @Query("sido") String sido, @Query("gugun") String gugun, @Query("DEATH") String DEATH);
     }
 }

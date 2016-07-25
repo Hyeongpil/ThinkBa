@@ -1,4 +1,4 @@
-package com.hyeongpil.thinkba.util.kakao;
+package com.hyeongpil.thinkba.login.kakao;
 
 import android.app.Activity;
 import android.content.Context;

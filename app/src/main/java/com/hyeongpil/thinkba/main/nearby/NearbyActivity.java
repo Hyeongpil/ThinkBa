@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.login.LoginActivity;
@@ -39,6 +41,7 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     String apiKey = "965df1f1c4824c1f097710f996cc5de2";
     Nearby_Adapter nearby_adapter;
     LoginActivity loginActivity;
+    GoogleApiClient mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
 
     private HashMap<Integer, Item> mTagItemMap = new HashMap<Integer, Item>();
     LinearLayout nearby_maplayout;
@@ -50,6 +53,8 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     @Bind(R.id.hotel_btn) Button hotel_btn;
     @Bind(R.id.food_btn) Button food_btn;
     @Bind(R.id.leisure_btn) Button leisure_btn;
+    @Bind(R.id.nearby_achieve)
+    FrameLayout achieve_popup;
 
     double latitude;
     double longitude;
@@ -63,11 +68,10 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
 
         init();
 
-
-
         daumMapinit();
 
     }
+
     private void init(){
         loginActivity = new LoginActivity();
         super_btn.setOnClickListener(this);
@@ -78,6 +82,8 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         nearby_adapter = new Nearby_Adapter(NearbyActivity.this);
         ((ListView)findViewById(R.id.nearby_listview)).setAdapter(nearby_adapter);
         nearby_maplayout = (LinearLayout)findViewById(R.id.nearby_mapview);
+
+        Games.setViewForPopups(mGoogleApiClient,achieve_popup);
     }
 
     private void daumMapinit(){
@@ -183,7 +189,7 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.hospital_btn:
                 search("병원");
                 try {
-                    Games.Achievements.unlock(GlobalApplication.getInstance().getmGoogleApiClient(), getString(R.string.achievement_heros_never_die));
+                    Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_heros_never_die));
                 }catch (IllegalStateException e){Log.e(TAG,"구글 연결 안됨");}
                 break;
             case R.id.hotel_btn:
@@ -192,7 +198,7 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.food_btn:
                 search("음식점");
                 try {
-                    Games.Achievements.unlock(GlobalApplication.getInstance().getmGoogleApiClient(), getString(R.string.achievement_dont_starve));
+                    Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_dont_starve));
                 }catch (IllegalStateException e){Log.e(TAG,"구글 연결 안됨");}
                 break;
             case R.id.leisure_btn:
