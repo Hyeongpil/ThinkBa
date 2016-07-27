@@ -1,8 +1,8 @@
 package com.hyeongpil.thinkba.main.nearby;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +14,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.login.LoginActivity;
+import com.hyeongpil.thinkba.util.BaseActivity;
 import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.hyeongpil.thinkba.util.GpsInfo;
 import com.hyeongpil.thinkba.util.daum_search.Item;
@@ -36,9 +37,9 @@ import butterknife.ButterKnife;
 /**
  * Created by hp on 2016-05-29.
  */
-public class NearbyActivity extends AppCompatActivity implements View.OnClickListener {
+public class NearbyActivity extends BaseActivity implements View.OnClickListener {
     final static String TAG = "NearbyActivity";
-    String apiKey = "965df1f1c4824c1f097710f996cc5de2";
+    String apiKey;
     Nearby_Adapter nearby_adapter;
     LoginActivity loginActivity;
     GoogleApiClient mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
@@ -47,6 +48,7 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     LinearLayout nearby_maplayout;
     MapView mapView;
     GpsInfo gpsInfo;
+    View containView;
 
     @Bind(R.id.super_btn) Button super_btn;
     @Bind(R.id.hospital_btn) Button hospital_btn;
@@ -62,17 +64,18 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nearby);
-        setTitle("주변 검색");
+        container.setLayoutResource(R.layout.activity_nearby);
+        containView = container.inflate();
         ButterKnife.bind(this);
+        actionBarTitleSet("주변 검색", Color.WHITE);
 
-        init();
+        getComponent();
 
         daumMapinit();
 
     }
 
-    private void init(){
+    private void getComponent(){
         loginActivity = new LoginActivity();
         super_btn.setOnClickListener(this);
         hospital_btn.setOnClickListener(this);
@@ -82,6 +85,7 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
         nearby_adapter = new Nearby_Adapter(NearbyActivity.this);
         ((ListView)findViewById(R.id.nearby_listview)).setAdapter(nearby_adapter);
         nearby_maplayout = (LinearLayout)findViewById(R.id.nearby_mapview);
+        apiKey = getString(R.string.daum_map_key);
 
         Games.setViewForPopups(mGoogleApiClient,achieve_popup);
     }
@@ -140,8 +144,7 @@ public class NearbyActivity extends AppCompatActivity implements View.OnClickLis
             }
 
             @Override
-            public void onFail() {Log.e(TAG,"지도 검색 오류");
-            }
+            public void onFail() {Log.e(TAG,"지도 검색 오류");}
         });
     }
 

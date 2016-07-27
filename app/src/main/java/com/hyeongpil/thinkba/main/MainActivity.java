@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +26,9 @@ import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.hyeongpil.thinkba.util.GpsInfo;
 import com.hyeongpil.thinkba.util.ListViewDialog;
 import com.hyeongpil.thinkba.util.model.TmapPointArr;
+import com.hyeongpil.thinkba.util.model.Weather;
 import com.hyeongpil.thinkba.util.retrofit.AccidentThread;
+import com.hyeongpil.thinkba.util.retrofit.LivingThread;
 import com.hyeongpil.thinkba.util.retrofit.WeatherThread;
 import com.skp.Tmap.TMapCircle;
 import com.skp.Tmap.TMapData;
@@ -59,6 +62,14 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
     FrameLayout mapLayout;
     @Bind(R.id.main_achieve) FrameLayout achieve_popup;
     @Bind(R.id.main_speed) TextView tv_speed;
+    @Bind(R.id.main_weather_dust_grade) TextView dust_grade;
+    @Bind(R.id.main_weather_dust_power) TextView dust_power;
+    @Bind(R.id.main_weather_icon) ImageView weather_icon;
+    @Bind(R.id.main_weather_temp) TextView temp;
+    @Bind(R.id.main_weather_uv_grade) TextView uv_grade;
+    @Bind(R.id.main_weather_uv_power) TextView uv_power;
+    @Bind(R.id.main_weather_wind_spd) TextView wind_speed;
+    @Bind(R.id.main_weather_wind_dir) ImageView wind_dir;
 
     double latitude; //위도
     double longitude; // 경도
@@ -79,6 +90,17 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         tMapGps();
         tMapInit();
         weatherInit();
+
+
+        //사고다발지역 표시 여부가 true라면 사고다발지역 불러옴
+        Log.d(TAG, "accident :" + BasicValue.getInstance().isAccident());
+        if (BasicValue.getInstance().isAccident()) {
+            Handler handler = new AccidentReceiveHandler();
+            Thread accidentThread = new AccidentThread(handler, MainActivity.this);
+            accidentThread.start();
+        }else{
+            mapView.removeAllTMapCircle();
+        }
     }
 
     private void init(){
@@ -112,49 +134,15 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
 
         mapLayout.addView(mapView);
     }
-    private void weatherInit(){
-        Handler handler = new WeatherReceiveHandler();
-        Thread weatherThread = new WeatherThread(handler, MainActivity.this, latitude, longitude);
-        weatherThread.start();
-    }
 
-    /**
-     * setPath
-     * 도착지 정보가 있다면 맵에 경로를 그려준다
-     */
-    private void setPath() {
-        try {
-            TMapData tmapdata = new TMapData();
-            if (passPoint.getLatitude() > 0.0 && arrivePoint != null) { // 출발지와 도착지 사이의 주변검색 경유지를 그려줌
-                Log.d(TAG, "setPath 1번 진입");
-                ArrayList<TMapPoint> passlist = new ArrayList<TMapPoint>();
-                passlist.add(passPoint);
-                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, arrivePoint, passlist, 0, new TMapData.FindPathDataListenerCallback() {
-                    @Override
-                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
-                        mapView.addTMapPath(tMapPolyLine);
-                    }
-                });
-            } else if (arrivePoint != null) { //출발지와 도착지 결과를 받아 경로를 그려줌
-                Log.d(TAG, "setPath 2번 진입");
-                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, arrivePoint, new TMapData.FindPathDataListenerCallback() {
-                    @Override
-                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
-                        mapView.addTMapPath(tMapPolyLine);
-                    }
-                });
-            } else if (passPoint.getLatitude() > 0.0) { //출발지와 주변겸색 결과를 받아 자전거 경로를 그려줌
-                Log.d(TAG, "setPath 3번 진입");
-                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, passPoint, new TMapData.FindPathDataListenerCallback() {
-                    @Override
-                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
-                        mapView.addTMapPath(tMapPolyLine);
-                    }
-                });
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "setPath error");
-        }
+    private void weatherInit(){
+        Handler weatherHandler = new WeatherReceiveHandler();
+        //날씨 정보 가져오기
+        Thread weatherThread = new WeatherThread(weatherHandler, MainActivity.this, latitude, longitude);
+        weatherThread.start();
+        //미세먼지, 자외선 가져오기
+        Thread livingThread = new LivingThread(weatherHandler, MainActivity.this, latitude, longitude);
+        livingThread.start();
     }
 
     private void tMapGps() {
@@ -275,6 +263,44 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         }
     }
     /**
+     * setPath
+     * 도착지 정보가 있다면 맵에 경로를 그려준다
+     */
+    private void setPath() {
+        try {
+            TMapData tmapdata = new TMapData();
+            if (passPoint.getLatitude() > 0.0 && arrivePoint != null) { // 출발지와 도착지 사이의 주변검색 경유지를 그려줌
+                Log.d(TAG, "setPath 1번 진입");
+                ArrayList<TMapPoint> passlist = new ArrayList<TMapPoint>();
+                passlist.add(passPoint);
+                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, arrivePoint, passlist, 0, new TMapData.FindPathDataListenerCallback() {
+                    @Override
+                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
+                        mapView.addTMapPath(tMapPolyLine);
+                    }
+                });
+            } else if (arrivePoint != null) { //출발지와 도착지 결과를 받아 경로를 그려줌
+                Log.d(TAG, "setPath 2번 진입");
+                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, arrivePoint, new TMapData.FindPathDataListenerCallback() {
+                    @Override
+                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
+                        mapView.addTMapPath(tMapPolyLine);
+                    }
+                });
+            } else if (passPoint.getLatitude() > 0.0) { //출발지와 주변겸색 결과를 받아 자전거 경로를 그려줌
+                Log.d(TAG, "setPath 3번 진입");
+                tmapdata.findPathDataWithType(TMapData.TMapPathType.BICYCLE_PATH, startPoint, passPoint, new TMapData.FindPathDataListenerCallback() {
+                    @Override
+                    public void onFindPathData(TMapPolyLine tMapPolyLine) {
+                        mapView.addTMapPath(tMapPolyLine);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "setPath error");
+        }
+    }
+    /**
      * getArriveInfo
      * 길 찾기 에서 도착지를 받아온다
      */
@@ -301,19 +327,6 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.removeAllTMapCircle();
-        //사고다발지역 표시 여부가 true라면
-        Log.d(TAG, "accident :" + BasicValue.getInstance().isAccident());
-        if (BasicValue.getInstance().isAccident()) {
-            Handler handler = new AccidentReceiveHandler();
-            Thread accidentThread = new AccidentThread(handler, MainActivity.this);
-            accidentThread.start();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.e(TAG,"구글 연결 해제");
@@ -324,10 +337,10 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
      * 로그인 카운트를 받아 업적을 띄워준다.
      */
     private void setAchievement(){
-        Games.setViewForPopups(mGoogleApiClient,achieve_popup);
-        int loginCount = getIntent().getIntExtra("loginCount",0); // 카카오 사인업 액티비티에서 받음
-        Log.d(TAG,"loginCount :"+loginCount);
         try{if(mGoogleApiClient.isConnected()) {
+            int loginCount = getIntent().getIntExtra("loginCount",0); // 카카오 사인업 액티비티에서 받음
+            Log.d(TAG,"loginCount :"+loginCount);
+            Games.setViewForPopups(mGoogleApiClient,achieve_popup);
             if (loginCount == 1) {
                 Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_thinkba_people), 1);
             } else if (loginCount == 10) {
@@ -339,27 +352,36 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
             Toast.makeText(MainActivity.this, "구글 게임 연동이 실패하였습니다 다시 로그인 해 주세요", Toast.LENGTH_SHORT).show();
         }}catch (NullPointerException e){}
     }
+
     private class AccidentReceiveHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             tmapPointArr = (TmapPointArr) msg.getData().getSerializable("THREAD"); // 스레드에서 tMapPointArr를 받음
-
             try {
                 setCircle(tmapPointArr.gettMapPointArr());
-
                 for (int i = 0; i < arr_tMapCircle.size(); i++) {
                     mapView.addTMapCircle("circle" + i, arr_tMapCircle.get(i));
                 }
             }catch (NullPointerException e){Log.e(TAG,"TmapCircle error :"+e.getMessage());}
         }
     }
+
     private class WeatherReceiveHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
+            if(msg.getData().getString("dust") != null){
+                dust_power.setText(Weather.getInstance().getDust_value());
+                dust_grade.setText(Weather.getInstance().getDust_grade());
+            }else if(msg.getData().getString("weather") != null){
+                temp.setText(Weather.getInstance().getTemperature()+" \u00b0");
+                wind_speed.setText(Weather.getInstance().getWind_speed()+"m/s");
+                int icon_id = mContext.getResources().getIdentifier(Weather.getInstance().getWeatherIcon(),"drawable","com.hyeongpil.thinkba");
+                weather_icon.setBackground(mContext.getResources().getDrawable(icon_id));
+            }else if(msg.getData().getString("uv") != null){
+                uv_power.setText(Weather.getInstance().getUv());
+            }
         }
     }
-
 }

@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15dp"
-            android:textColor="@color/gray"
+            android:textColor="@color/hpgrey"
             android:text="주소에유"/>
     </LinearLayout>
 

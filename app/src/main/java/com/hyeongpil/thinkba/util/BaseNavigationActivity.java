@@ -1,5 +1,6 @@
 package com.hyeongpil.thinkba.util;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +24,7 @@ import com.hyeongpil.thinkba.navigation.MyPageActivity;
 import com.hyeongpil.thinkba.navigation.SettingActivity;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
@@ -118,6 +120,14 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
                 .error(R.drawable.default_profile)
                 .bitmapTransform(new CropCircleTransformation(Glide.get(BaseNavigationActivity.this).getBitmapPool())).into(profile_img);
         profile_name.setText(BasicValue.getInstance().getProfile_name());
+    }
+    /**
+     * 글씨체 일괄 적용
+     * @param newBase
+     */
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
 }

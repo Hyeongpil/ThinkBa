@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,14 +17,13 @@ import android.widget.ListView;
 
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.util.BaseActivity;
+import com.hyeongpil.thinkba.util.ViewPageAdapter;
 import com.hyeongpil.thinkba.util.model.POI_Data;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapPOIItem;
 import com.skp.Tmap.TMapPoint;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -45,6 +47,10 @@ public class FindRoadActivity extends BaseActivity {
     FindRoad_Adapter findRoad_adapter;
 
     View containView;
+    ViewPageAdapter adapter;
+    ViewPager viewPager;
+    DistanceFragment mDistanceFragment;
+    AccurateFragment mAccurateFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,9 +63,8 @@ public class FindRoadActivity extends BaseActivity {
         getStartpoint();
 
         imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        findRoad_adapter = new FindRoad_Adapter(FindRoadActivity.this);
-        mListView = (ListView)findViewById(R.id.findload_listview);
-        mListView.setAdapter(findRoad_adapter);
+        setViewpager();
+
 
     }
     /**
@@ -78,6 +83,22 @@ public class FindRoadActivity extends BaseActivity {
         } catch (Exception e) {
             Log.d(TAG, "getStartpoint null");
         }
+    }
+    private void setViewpager(){
+        mDistanceFragment = new DistanceFragment();
+        mAccurateFragment = new AccurateFragment();
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(mAccurateFragment);
+        fragments.add(mDistanceFragment);
+        List<String> titles = new ArrayList<String>();
+        titles.add("정확도 순");
+        titles.add("거리 순");
+
+        adapter = new ViewPageAdapter(getSupportFragmentManager(), fragments, titles);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     /**
@@ -103,8 +124,8 @@ public class FindRoadActivity extends BaseActivity {
                         poi_data.distanceStr =  calDistance(item.getDistance(startPoint));
                         temp_itemList.add(poi_data);
                     }
-                    Collections.sort(temp_itemList, new DistanceCompare()); // 정렬
-                    findRoad_adapter.setArrayItems(temp_itemList);
+                    mDistanceFragment.setItemList(temp_itemList);
+                    mAccurateFragment.setItemList(temp_itemList);
                 }
             });
             imm.hideSoftInputFromWindow(goal.getWindowToken(), 0); // 키보드 숨김
@@ -131,15 +152,6 @@ public class FindRoadActivity extends BaseActivity {
         }
     }
 
-    /**
-     * DistanceCompare
-     * 거리 정렬
-     */
-    private class DistanceCompare implements Comparator<POI_Data> {
-        @Override
-        public int compare(POI_Data lhs, POI_Data rhs) {
-            return lhs.distance.compareTo(rhs.distance);
-        }
-    }
+
 
 }

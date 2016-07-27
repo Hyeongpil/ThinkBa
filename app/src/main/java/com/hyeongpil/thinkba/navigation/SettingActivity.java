@@ -1,21 +1,26 @@
 package com.hyeongpil.thinkba.navigation;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.hyeongpil.thinkba.R;
+import com.hyeongpil.thinkba.util.BaseActivity;
 
 
 /**
  * Created by hp on 2016-06-17.
  */
-public class SettingActivity extends AppCompatActivity{
+public class SettingActivity extends BaseActivity{
+    View containView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
-        setTitle("설정");
+        container.setLayoutResource(R.layout.activity_setting);
+        containView = container.inflate();
+        actionBarTitleSet("설정", Color.WHITE);
+
         getFragmentManager().beginTransaction().replace(R.id.content_frame, new SettingFragment()).commit();
     }
 

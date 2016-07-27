@@ -18,8 +18,8 @@ public class WeatherRepo implements Serializable{
 
     @SerializedName("result")
     Result result;
-    @SerializedName("gweather")
-    Gweather gweather;
+    @SerializedName("weather")
+    weather weather;
 
 
     public class Result {
@@ -30,27 +30,30 @@ public class WeatherRepo implements Serializable{
         }
     }
 
-    public class Gweather{
+    public class weather {
 
-        public List<Gweather.current> current = new ArrayList<>();
-        public List<Gweather.current> getCurrent() {return current;}
+        public List<hourly> hourly = new ArrayList<>();
+        public List<hourly> getHourly() {return hourly;}
 
-        public class current{
+        public class hourly {
             @SerializedName("sky") Sky sky;
+            @SerializedName("precipitation") precipitation precipitation;
+            @SerializedName("temperature") temperature temperature;
+            @SerializedName("wind") wind wind;
 
             public class Sky{
                 @SerializedName("name") String name;
-                @SerializedName("icon") String icon;
+                @SerializedName("code") String code;
 
                 public String getName() {return name;}
-                public String getIcon() {return icon;}
+                public String getCode() {return code;}
             }
 
             public class precipitation{ // 강수 정보
-                @SerializedName("value") String precipitation; // 강우
+                @SerializedName("sinceOntime") String sinceOntime; // 강우
                 @SerializedName("type") String type; //0 :없음 1:비 2: 비/눈 3: 눈
 
-                public String getPrecipitation() {return precipitation;}
+                public String getSinceOntime() {return sinceOntime;}
                 public String getType() {return type;}
             }
             public class temperature{
@@ -59,25 +62,16 @@ public class WeatherRepo implements Serializable{
                 public String getTc() {return tc;}
             }
             public class wind{ // 바람
-                @SerializedName("speed") Speed speed;
-                @SerializedName("direction") Direction direction;
-                public class Speed{
-                    @SerializedName("name") String name; // 바람 이름
+                @SerializedName("wdir") String wdir;
+                @SerializedName("wspd") String wspd;
 
-                    public String getName() {return name;}
-                }
-                public class Direction{
-                    @SerializedName("name") String name; // 풍향
-                    @SerializedName("value") String value; // 풍속
-
-                    public String getName() {return name;}
-                    public String getValue() {return value;}
-                }
-                public Speed getSpeed() {return speed;}
-                public Direction getDirection() {return direction;}
+                public String getWdir() {return wdir;}
+                public String getWspd() {return wspd;}
             }
-
             public Sky getSky() {return sky;}
+            public hourly.precipitation getPrecipitation() {return precipitation;}
+            public hourly.temperature getTemperature() {return temperature;}
+            public hourly.wind getWind() {return wind;}
         }
 
 
@@ -88,15 +82,15 @@ public class WeatherRepo implements Serializable{
         return result;
     }
 
-    public Gweather getGweather() {
-        return gweather;
+    public weather getWeather() {
+        return weather;
     }
 
-    //한국 날씨 weather/current/hourly
-    //세계 날씨 gweather/current
+    //한국 날씨 weather/hourly/hourly
+    //세계 날씨 weather/hourly
     public interface AccidentApiInterface {
         @Headers({"Accept: application/json","access_token: 705c1ee2-9ce5-4a61-97ad-fc3e55d0b4dc","appKey: d5c4630e-a1ac-3ddc-8417-03e1bf83e1b4"})
-        @GET("gweather/current")
+        @GET("weather/current/hourly")
         Call<WeatherRepo> get_Weather_retrofit(@Query("version") int version, @Query("lat") String lat, @Query("lon") String lon);
     }
 }
