@@ -1,11 +1,11 @@
 package com.hyeongpil.thinkba.main.findroad;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.main.MainActivity;
+import com.hyeongpil.thinkba.util.BaseActivity;
 import com.hyeongpil.thinkba.util.GpsInfo;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapPoint;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
 /**
  * Created by hp on 2016-05-21.
  */
-public class PathActivity extends AppCompatActivity {
+public class PathActivity extends BaseActivity {
     final static String TAG = "PathActivity";
 
     TMapView mapView;
@@ -46,11 +47,14 @@ public class PathActivity extends AppCompatActivity {
     String pathTimeStr;
     String arrive; // 도착지 좌표
 
+    View containView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_path);
-        setTitle("자전거 경로 안내");
+        container.setLayoutResource(R.layout.activity_path);
+        containView = container.inflate();
+        actionBarTitleSet("자전거 경로 안내", Color.WHITE);
         ButterKnife.bind(this);
         mapLayout = (FrameLayout)findViewById(R.id.pathMapLayout);
 

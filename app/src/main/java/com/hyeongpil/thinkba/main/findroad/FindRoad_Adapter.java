@@ -76,6 +76,7 @@ public class FindRoad_Adapter extends BaseAdapter {
                     pathIntent.putExtra("arrivePoint",mListData.get(finalposition).point);
                     mContext.startActivity(pathIntent);
                     ((Activity)mContext).finish();
+                    ((Activity)mContext).overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
                 }
             });
         }else{

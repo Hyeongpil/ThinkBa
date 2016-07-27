@@ -1,13 +1,15 @@
 package com.hyeongpil.thinkba.navigation;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hyeongpil.thinkba.R;
-import com.hyeongpil.thinkba.util.BaseNavigationActivity;
+import com.hyeongpil.thinkba.util.BaseActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
 
 import butterknife.Bind;
@@ -17,7 +19,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 /**
  * Created by hp on 2016. 7. 18.
  */
-public class MyPageActivity extends BaseNavigationActivity {
+public class MyPageActivity extends BaseActivity {
 
     @Bind(R.id.mypage_profile_img)
     ImageView profile_img;
@@ -41,16 +43,17 @@ public class MyPageActivity extends BaseNavigationActivity {
     ImageView archive_3;
     @Bind(R.id.mypage_archive_4)
     ImageView archive_4;
-
+    View containView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mypage);
+        container.setLayoutResource(R.layout.activity_mypage);
+        containView = container.inflate();
         setTitle("프로필");
+        actionBarTitleSet("프로필", Color.WHITE);
         ButterKnife.bind(this);
 
-        naviDrawerInit();
         setProfile();
     }
 
@@ -62,4 +65,5 @@ public class MyPageActivity extends BaseNavigationActivity {
                 .bitmapTransform(new CropCircleTransformation(Glide.get(MyPageActivity.this).getBitmapPool())).into(profile_img);
         profile_name.setText(BasicValue.getInstance().getProfile_name());
     }
+
 }

@@ -60,6 +60,7 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
         switch (id) {
             case (R.id.nav_myinfo):
                 startActivity(new Intent(BaseNavigationActivity.this, MyPageActivity.class));
+                overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
                 break;
 
             case (R.id.nav_archive):
@@ -118,4 +119,5 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
                 .bitmapTransform(new CropCircleTransformation(Glide.get(BaseNavigationActivity.this).getBitmapPool())).into(profile_img);
         profile_name.setText(BasicValue.getInstance().getProfile_name());
     }
+
 }

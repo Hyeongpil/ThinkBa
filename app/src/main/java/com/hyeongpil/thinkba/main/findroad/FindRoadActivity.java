@@ -2,9 +2,9 @@ package com.hyeongpil.thinkba.main.findroad;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.hyeongpil.thinkba.R;
+import com.hyeongpil.thinkba.util.BaseActivity;
 import com.hyeongpil.thinkba.util.model.POI_Data;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapPOIItem;
@@ -30,7 +31,7 @@ import butterknife.OnClick;
 /**
  * Created by hp on 2016-05-17.
  */
-public class FindRoadActivity extends AppCompatActivity {
+public class FindRoadActivity extends BaseActivity {
     final static String TAG = "FindRoadActivity";
     TMapData tmapdata = new TMapData();
     TMapPoint startPoint;
@@ -43,12 +44,16 @@ public class FindRoadActivity extends AppCompatActivity {
     ListView mListView = null;
     FindRoad_Adapter findRoad_adapter;
 
+    View containView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_findroad);
+        container.setLayoutResource(R.layout.activity_findroad);
+        containView = container.inflate();
         ButterKnife.bind(this);
-        setTitle("길 찾기");
+        actionBarTitleSet("길 찾기", Color.WHITE);
+
         getStartpoint();
 
         imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);

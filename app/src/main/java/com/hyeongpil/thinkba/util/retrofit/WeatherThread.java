@@ -33,19 +33,16 @@ public class WeatherThread extends Thread {
     @Override
     public void run() {
         super.run();
-        Log.e(TAG,"진입");
         Retrofit client = new Retrofit.Builder().baseUrl("http://apis.skplanetx.com/").addConverterFactory(GsonConverterFactory.create()).build();
         WeatherRepo.AccidentApiInterface service = client.create(WeatherRepo.AccidentApiInterface.class);
         Call<WeatherRepo> call = service.get_Weather_retrofit(version,lat,lon);
         call.enqueue(new Callback<WeatherRepo>() {
             @Override
             public void onResponse(Call<WeatherRepo> call, Response<WeatherRepo> response) {
-                Log.e(TAG,"response.header :"+response.headers());
-                Log.e(TAG,"response.raw :"+response.raw());
                 if(response.isSuccessful()){
                     weatherRepo = response.body();
-                    Log.e(TAG,"weatherRepo.getresult() :"+weatherRepo.getResult().getMessage());
-                    Log.e(TAG,"weatherRepo.getCurrent() :"+weatherRepo.getGweather().getCurrent());
+                    // TODO: 2016. 7. 25. 미세먼지와 자외선도 받아서 메인에 추가
+                    Log.d(TAG,"response.raw :"+response.raw());
                     Log.e(TAG,"sky :"+weatherRepo.getGweather().getCurrent().get(0).getSky().getName());
                 }
             }

@@ -58,7 +58,7 @@ public class WeatherRepo implements Serializable{
 
                 public String getTc() {return tc;}
             }
-            public class wind{ // 바
+            public class wind{ // 바람
                 @SerializedName("speed") Speed speed;
                 @SerializedName("direction") Direction direction;
                 public class Speed{

@@ -58,8 +58,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
     TMapView mapView;
     FrameLayout mapLayout;
     @Bind(R.id.main_achieve) FrameLayout achieve_popup;
-    @Bind(R.id.main_speed)
-    TextView tv_speed;
+    @Bind(R.id.main_speed) TextView tv_speed;
 
     double latitude; //위도
     double longitude; // 경도

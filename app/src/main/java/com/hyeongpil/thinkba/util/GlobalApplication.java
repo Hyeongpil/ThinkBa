@@ -10,6 +10,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.hyeongpil.thinkba.login.kakao.KakaoSDKAdapter;
 import com.kakao.auth.KakaoSDK;
+import com.tsengvn.typekit.Typekit;
 
 /**
  * Created by hp on 2016-06-09.
@@ -40,6 +41,11 @@ public class GlobalApplication extends Application implements GoogleApiClient.Co
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        Typekit.getInstance()
+                .addNormal(Typekit.createFromAsset(this, "fonts/NanumGothic.ttf"))
+                .addBold(Typekit.createFromAsset(this, "fonts/NanumBarunGothicBold.ttf"));
+
 
         KakaoSDK.init(new KakaoSDKAdapter());
     }
@@ -95,5 +101,6 @@ public class GlobalApplication extends Application implements GoogleApiClient.Co
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(TAG,"구글 연결 실패");
     }
+
 
 }
