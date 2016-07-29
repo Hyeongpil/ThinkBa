@@ -54,7 +54,7 @@ public class PathActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         container.setLayoutResource(R.layout.activity_path);
         containView = container.inflate();
-        actionBarTitleSet("자전거 경로 안내", Color.WHITE);
+        actionBarTitleSet("자전거 경로 안내", Color.BLACK);
         ButterKnife.bind(this);
         mapLayout = (FrameLayout)findViewById(R.id.pathMapLayout);
 

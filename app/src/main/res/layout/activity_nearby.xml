@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <FrameLayout
         android:id="@+id/nearby_achieve"
@@ -20,40 +23,52 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+
         android:weightSum="5">
         <Button
             android:id="@+id/super_btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/MyButton"
+            android:elevation="2dp"
             android:text="편의점"/>
         <Button
             android:id="@+id/hospital_btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/MyButton"
+            android:elevation="2dp"
             android:text="병원"/>
         <Button
             android:id="@+id/hotel_btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/MyButton"
+            android:elevation="2dp"
             android:text="숙박"/>
         <Button
             android:id="@+id/food_btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/MyButton"
+            android:elevation="2dp"
             android:text="음식점"/>
         <Button
             android:id="@+id/leisure_btn"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/MyButton"
+            android:elevation="2dp"
             android:text="관광"/>
     </LinearLayout>
 
     <ListView
+        android:layout_marginTop="5dp"
         android:id="@+id/nearby_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

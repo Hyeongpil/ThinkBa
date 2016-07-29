@@ -32,8 +32,7 @@
         <activity android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".main.findroad.FindRoadActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+        <activity android:name=".main.findroad.FindRoadActivity">
         </activity>
         <activity android:name=".main.findroad.PathActivity">
         </activity>
@@ -43,11 +42,9 @@
         </activity>
         <activity android:name=".navigation.SettingActivity">
         </activity>
-        <activity android:name=".navigation.MyPageActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".navigation.MyPageActivity">
         </activity>
-        <activity android:name=".navigation.ArchiveActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".navigation.ArchiveActivity" />
 
     </application>
 

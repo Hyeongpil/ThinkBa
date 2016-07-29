@@ -46,7 +46,7 @@ public class BaseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.back_btn);
+        actionBar.setHomeAsUpIndicator(R.drawable.back_black);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
     }

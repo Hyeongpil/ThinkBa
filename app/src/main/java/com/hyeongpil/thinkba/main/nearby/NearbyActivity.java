@@ -67,7 +67,7 @@ public class NearbyActivity extends BaseActivity implements View.OnClickListener
         container.setLayoutResource(R.layout.activity_nearby);
         containView = container.inflate();
         ButterKnife.bind(this);
-        actionBarTitleSet("주변 검색", Color.WHITE);
+        actionBarTitleSet("주변 검색", Color.BLACK);
 
         getComponent();
 
@@ -91,11 +91,14 @@ public class NearbyActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void daumMapinit(){
-        gpsInfo = new GpsInfo(NearbyActivity.this);
-        if(gpsInfo.isGetLocation()) { // 현재 위치 받아오기
-            latitude = gpsInfo.getLatitude();
-            longitude = gpsInfo.getLongitude();
-        }
+        // TODO: 2016. 7. 29. 주석 지우기
+        latitude =  36.6244636;
+        longitude = 127.4617878;
+//        gpsInfo = new GpsInfo(NearbyActivity.this);
+//        if(gpsInfo.isGetLocation()) { // 현재 위치 받아오기
+//            latitude = gpsInfo.getLatitude();
+//            longitude = gpsInfo.getLongitude();
+//        }
         try {
             mapView = new MapView(this);
             mapView.setDaumMapApiKey(apiKey);

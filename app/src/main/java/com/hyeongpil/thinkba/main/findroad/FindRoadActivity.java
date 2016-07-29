@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.util.BaseActivity;
@@ -43,8 +42,6 @@ public class FindRoadActivity extends BaseActivity {
 
     ArrayList<POI_Data> itemList;
     private InputMethodManager imm;
-    ListView mListView = null;
-    FindRoad_Adapter findRoad_adapter;
 
     View containView;
     ViewPageAdapter adapter;
@@ -58,7 +55,7 @@ public class FindRoadActivity extends BaseActivity {
         container.setLayoutResource(R.layout.activity_findroad);
         containView = container.inflate();
         ButterKnife.bind(this);
-        actionBarTitleSet("길 찾기", Color.WHITE);
+        actionBarTitleSet("길 찾기", Color.BLACK);
 
         getStartpoint();
 
@@ -124,8 +121,8 @@ public class FindRoadActivity extends BaseActivity {
                         poi_data.distanceStr =  calDistance(item.getDistance(startPoint));
                         temp_itemList.add(poi_data);
                     }
-                    mDistanceFragment.setItemList(temp_itemList);
-                    mAccurateFragment.setItemList(temp_itemList);
+                    mAccurateFragment.set_acu_itemlist(temp_itemList);
+                    mDistanceFragment.set_dis_itemList(temp_itemList);
                 }
             });
             imm.hideSoftInputFromWindow(goal.getWindowToken(), 0); // 키보드 숨김

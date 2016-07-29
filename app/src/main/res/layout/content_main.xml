@@ -16,179 +16,145 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
-
-    <FrameLayout
-        android:id="@+id/main_map_container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:orientation="vertical">
-
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10">
         <FrameLayout
-            android:id="@+id/mapLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="450dp">
-        </FrameLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:id="@+id/main_map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="vertical">
-            <Button
-                android:onClick="now_btnClick"
-                android:id="@+id/nowLocation"
+            <!--티맵 컨테이너-->
+            <FrameLayout
+                android:id="@+id/mapLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+            </FrameLayout>
+            <!--우측 플로팅 버튼-->
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="현위치"
-                android:layout_gravity="right" />
-            <Button
-                android:onClick="tracking_btnClick"
-                android:id="@+id/tracking"
+                android:layout_gravity="end"
+                android:orientation="vertical">
+                <!--현위치-->
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/nowLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/current_place"
+                    app:backgroundTint="@color/white"
+                    app:fabSize="mini"/>
+                <!--트래킹 켜기-->
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/tracking_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/traking_off"
+                    android:layout_marginTop="50dp"
+                    app:backgroundTint="@color/white"
+                    app:fabSize="mini"/>
+                <!--트래킹 끄기-->
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/tracking_on"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/traking_on"
+                    android:layout_marginTop="50dp"
+                    android:visibility="invisible"
+                    android:tint="@color/orange"
+                    app:backgroundTint="@color/white"
+                    app:fabSize="mini"/>
+                <!--경로 취소-->
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/deletePath"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="100dp"
+                    android:src="@drawable/map_clear"
+                    app:backgroundTint="@color/white"
+                    app:fabSize="mini"/>
+            </RelativeLayout>
+            <!--메뉴-->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="트래킹"
-                android:layout_gravity="right" />
-            <Button
-                android:id="@+id/deletePath"
+                android:layout_gravity="bottom">
+            </RelativeLayout>
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/main_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="안내 취소"
-                android:layout_gravity="right" />
+                android:layout_gravity="bottom"
+                android:src="@drawable/plus"
+                android:tint="@color/black"
+                app:rippleColor="@color/whitepink"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini" />
+            <!--길 찾기-->
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/main_fab_findroad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="50dp"
+                android:src="@drawable/mini_bike"
+                android:visibility="invisible"
+                app:rippleColor="@color/whitepink"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini" />
+            <!--주변 검색-->
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/main_fab_nearby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="50dp"
+                android:layout_marginBottom="50dp"
+                android:src="@drawable/find_road"
+                android:visibility="invisible"
+                app:rippleColor="@color/whitepink"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini" />
+            <!--설정-->
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/main_fab_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="50dp"
+                android:src="@drawable/settings"
+                android:visibility="invisible"
+                app:rippleColor="@color/whitepink"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini" />
+            <!--속도-->
+            <TextView
+                android:id="@+id/main_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.0km"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_gravity="right|bottom"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="10dp"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="8">
+            <include layout="@layout/main_weather"/>
         </LinearLayout>
 
-
-        <Button
-            android:onClick="mapMenu_btnClick"
-            android:id="@+id/mapMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="메뉴" />
-
-        <TextView
-            android:id="@+id/main_speed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0.0km"
-            android:textStyle="bold"
-            android:textSize="20dp"
-            android:layout_gravity="right|bottom"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"/>
-    </FrameLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_below="@+id/main_map_container">
-        <ImageView
-            android:id="@+id/main_weather_icon"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/w38"/>
-        <TextView
-            android:id="@+id/main_weather_temp"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="10dp"
-            android:text="- \u00b0"
-            android:textSize="20dp"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/main_weather_icon" />
-        <ImageView
-            android:id="@+id/main_weather_temp_line"
-            android:layout_toRightOf="@id/main_weather_temp"
-            android:layout_width="1dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/grey" />
-        <ImageView
-            android:id="@+id/main_weather_wind_dir"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_toRightOf="@id/main_weather_temp_line"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/wind_dir"/>
-        <!--풍속-->
-        <TextView
-            android:id="@+id/main_weather_wind_spd"
-            android:layout_below="@+id/main_weather_wind_dir"
-            android:layout_toRightOf="@id/main_weather_temp_line"
-            android:layout_marginLeft="10dp"
-            android:layout_width="40dp"
-            android:layout_height="20dp"
-            android:textSize="12dp" />
-        <ImageView
-            android:id="@+id/main_weather_wind_line"
-            android:layout_toRightOf="@id/main_weather_wind_spd"
-            android:layout_width="1dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/grey" />
-        <RelativeLayout
-            android:layout_toRightOf="@id/main_weather_wind_line"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp">
-            <TextView
-                android:id="@+id/main_weather_uv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="자외선 : "
-                android:textSize="13dp"
-                android:textColor="@color/black"/>
-            <!--자외선 값-->
-            <TextView
-                android:id="@+id/main_weather_uv_power"
-                android:layout_toRightOf="@id/main_weather_uv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:textSize="13dp"
-                android:layout_marginLeft="15dp" />
-            <!--자외선 등급-->
-            <TextView
-                android:id="@+id/main_weather_uv_grade"
-                android:layout_toRightOf="@+id/main_weather_uv_power"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:textSize="13dp"
-                android:layout_marginLeft="20dp" />
-            <TextView
-                android:id="@+id/main_weather_dust"
-                android:layout_below="@+id/main_weather_uv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="미세먼지 : "
-                android:textSize="13dp"
-                android:textColor="@color/black"/>
-            <!--미세먼지 값-->
-            <TextView
-                android:id="@+id/main_weather_dust_power"
-                android:layout_below="@+id/main_weather_uv_power"
-                android:layout_toRightOf="@id/main_weather_uv"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:textSize="13dp"
-                android:layout_marginLeft="15dp" />
-            <!--미세먼지 등급-->
-            <TextView
-                android:id="@+id/main_weather_dust_grade"
-                android:layout_below="@+id/main_weather_uv_grade"
-                android:layout_toRightOf="@+id/main_weather_uv_power"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:textSize="13dp"
-                android:layout_marginLeft="30dp" />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

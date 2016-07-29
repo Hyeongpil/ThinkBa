@@ -2,6 +2,7 @@ package com.hyeongpil.thinkba.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -36,6 +37,7 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
     ImageView profile_img;
     TextView profile_name;
     private GoogleApiClient mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
+    DrawerLayout drawer;
 
     @Override
     public void onBackPressed() {
@@ -63,6 +65,7 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
             case (R.id.nav_myinfo):
                 startActivity(new Intent(BaseNavigationActivity.this, MyPageActivity.class));
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+                drawer.setBackgroundColor(Color.WHITE);
                 break;
 
             case (R.id.nav_archive):
@@ -70,11 +73,13 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
                 if(mGoogleApiClient.isConnected()){
                     startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), 124);
                 }else {Toast.makeText(BaseNavigationActivity.this, "구글 게임 연동이 실패하였습니다 다시 로그인 해 주세요", Toast.LENGTH_SHORT).show();}
+                drawer.setBackgroundColor(Color.WHITE);
                 break;
 
             case (R.id.nav_setting):
                 Intent setting_intent = new Intent(this,SettingActivity.class);
                 startActivity(setting_intent);
+                drawer.setBackgroundColor(Color.WHITE);
                 break;
 
             case (R.id.nav_logout):
@@ -84,6 +89,7 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
                         Toast.makeText(BaseNavigationActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
                     }
                 });
+                drawer.setBackgroundColor(Color.WHITE);
 
                 Intent out_intent = new Intent(BaseNavigationActivity.this, LoginActivity.class);
                 out_intent.putExtra("logout","logout");
@@ -100,7 +106,7 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
         Toolbar toolbar = (Toolbar) findViewById(R.id.archive_toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -121,6 +127,7 @@ public class BaseNavigationActivity extends AppCompatActivity implements Navigat
                 .bitmapTransform(new CropCircleTransformation(Glide.get(BaseNavigationActivity.this).getBitmapPool())).into(profile_img);
         profile_name.setText(BasicValue.getInstance().getProfile_name());
     }
+
     /**
      * 글씨체 일괄 적용
      * @param newBase

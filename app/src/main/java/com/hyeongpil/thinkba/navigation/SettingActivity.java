@@ -19,7 +19,7 @@ public class SettingActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         container.setLayoutResource(R.layout.activity_setting);
         containView = container.inflate();
-        actionBarTitleSet("설정", Color.WHITE);
+        actionBarTitleSet("설정", Color.BLACK);
 
         getFragmentManager().beginTransaction().replace(R.id.content_frame, new SettingFragment()).commit();
     }

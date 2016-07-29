@@ -4,16 +4,20 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_myinfo"
-            android:title="내정보" />
+            android:title="내정보"
+            android:icon="@drawable/profile"/>
         <item
             android:id="@+id/nav_archive"
-            android:title="도전과제" />
+            android:title="도전과제"
+            android:icon="@drawable/achivement"/>
         <item
             android:id="@+id/nav_setting"
-            android:title="설정" />
+            android:title="설정"
+            android:icon="@drawable/settings"/>
         <item
             android:id="@+id/nav_logout"
-            android:title="로그아웃" />
+            android:title="로그아웃"
+            android:icon="@drawable/logout"/>
     </group>
 
 </menu>

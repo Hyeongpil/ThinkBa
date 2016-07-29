@@ -1,5 +1,14 @@
 package com.hyeongpil.thinkba.util.model;
 
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+
+import com.hyeongpil.thinkba.R;
+import com.hyeongpil.thinkba.util.GlobalApplication;
+
 /**
  * Created by chanyouvita on 2016. 7. 27..
  */
@@ -38,6 +47,9 @@ public class Weather {
     }
 
     public String getUv() {
+        try {
+            uv = uv.substring(0, 2);
+        }catch (Exception e){}
         return uv;
     }
 
@@ -53,8 +65,10 @@ public class Weather {
         this.cloud = cloud;
     }
 
-    public String getWind_direction() {
-        return wind_direction;
+    public Drawable getWind_direction() {
+        Bitmap wind_temp = rotate(Integer.parseInt(wind_direction.substring(0,wind_direction.indexOf("."))));
+        Drawable wind_drawable = new BitmapDrawable(wind_temp);
+        return wind_drawable;
     }
 
     public void setWind_direction(String wind_direction) {
@@ -69,7 +83,7 @@ public class Weather {
         this.wind_speed = wind_speed;
     }
 
-    public String getDust_value() {return dust_value.substring(0,2);}
+    public String getDust_value() {return dust_value.substring(0,dust_value.indexOf("."));}
 
     public void setDust_value(String dust_value) {this.dust_value = dust_value;}
 
@@ -94,5 +108,23 @@ public class Weather {
             case "SKY_O14":return "w28";
             default: return "w38";
         }
+    }
+    public static Bitmap rotate(int degrees) {
+        BitmapDrawable wind_temp = (BitmapDrawable) GlobalApplication.getInstance().getResources().getDrawable(R.drawable.wind_dir);
+        Bitmap b = wind_temp.getBitmap();
+        if ( degrees != 0 && b != null ) {
+            Matrix m = new Matrix();
+            m.setRotate( degrees, (float) b.getWidth() / 2, (float) b.getHeight() / 2 );
+            try {
+                Bitmap b2 = Bitmap.createBitmap( b, 0, 0, b.getWidth(), b.getHeight(), m, true );
+                if (b != b2) {
+                    b.recycle();
+                    b = b2;
+                }
+            } catch (OutOfMemoryError ex) {
+                Log.e("Weather","rotate error");
+            }
+        }
+        return b;
     }
 }

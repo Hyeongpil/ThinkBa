@@ -51,7 +51,7 @@ public class MyPageActivity extends BaseActivity {
         container.setLayoutResource(R.layout.activity_mypage);
         containView = container.inflate();
         setTitle("프로필");
-        actionBarTitleSet("프로필", Color.WHITE);
+        actionBarTitleSet("프로필", Color.BLACK);
         ButterKnife.bind(this);
 
         setProfile();
