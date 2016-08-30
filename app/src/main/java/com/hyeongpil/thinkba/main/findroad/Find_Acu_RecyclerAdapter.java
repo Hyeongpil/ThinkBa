@@ -11,21 +11,19 @@ import android.widget.TextView;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.util.model.POI_Data;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by hp on 2016. 7. 29..
  */
-public class Find_Dis_Recycler_Adapter extends RecyclerView.Adapter<Find_Dis_Recycler_Adapter.FindRoad_ViewHolder>{
-    final static String TAG = "Find_Dis_Adapter";
+public class Find_Acu_RecyclerAdapter extends RecyclerView.Adapter<Find_Acu_RecyclerAdapter.FindRoad_ViewHolder>{
+    final static String TAG = "Find_Acu_Adapter";
     private Context mContext;
     public List<POI_Data> mListData;
     private View.OnClickListener listener;
-    Find_Dis_Recycler_Adapter adapter;
+    Find_Acu_RecyclerAdapter adapter;
 
-    public Find_Dis_Recycler_Adapter(Context mContext, View.OnClickListener listener) {
+    public Find_Acu_RecyclerAdapter(Context mContext, View.OnClickListener listener) {
         this.mContext = mContext;
         this.listener = listener;
     }
@@ -56,7 +54,6 @@ public class Find_Dis_Recycler_Adapter extends RecyclerView.Adapter<Find_Dis_Rec
     }
 
     public void setData(List<POI_Data> mListData){
-        Collections.sort(mListData, new DistanceCompare()); // 거리순 정렬
         this.mListData = mListData;
         ((Activity)mContext).runOnUiThread(new Runnable() {
             @Override
@@ -64,6 +61,10 @@ public class Find_Dis_Recycler_Adapter extends RecyclerView.Adapter<Find_Dis_Rec
                 notifyDataSetChanged();
             }
         });
+    }
+
+    public List<POI_Data> getmListData() {
+        return mListData;
     }
 
     public class FindRoad_ViewHolder extends RecyclerView.ViewHolder{
@@ -80,16 +81,5 @@ public class Find_Dis_Recycler_Adapter extends RecyclerView.Adapter<Find_Dis_Rec
         public TextView getPoi_name() {return poi_name;}
         public TextView getPoi_adress() {return poi_adress;}
         public TextView getPoi_distance() {return poi_distance;}
-    }
-
-    /**
-     * DistanceCompare
-     * 거리 정렬
-     */
-    private class DistanceCompare implements Comparator<POI_Data> {
-        @Override
-        public int compare(POI_Data lhs, POI_Data rhs) {
-            return lhs.distance.compareTo(rhs.distance);
-        }
     }
 }

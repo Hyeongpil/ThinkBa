@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class DistanceFragment extends Fragment {
     final static String TAG = "DistanceFragment";
-    Find_Dis_Recycler_Adapter adapter;
+    Find_Dis_RecyclerAdapter adapter;
     RecyclerView dis_recyclerView;
     List<POI_Data> mListData;
 
@@ -38,7 +38,7 @@ public class DistanceFragment extends Fragment {
 
     private void init(){
 
-        adapter = new Find_Dis_Recycler_Adapter(getActivity(),new Find_Dis_ClickListener());
+        adapter = new Find_Dis_RecyclerAdapter(getActivity(),new Find_Dis_ClickListener());
         dis_recyclerView.setAdapter(adapter);
 
         LinearLayoutManager manager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);

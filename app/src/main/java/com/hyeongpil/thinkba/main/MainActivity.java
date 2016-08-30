@@ -3,6 +3,7 @@ package com.hyeongpil.thinkba.main;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,12 +25,14 @@ import com.hyeongpil.thinkba.main.nearby.NearbyActivity;
 import com.hyeongpil.thinkba.navigation.SettingActivity;
 import com.hyeongpil.thinkba.util.BaseNavigationActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
+import com.hyeongpil.thinkba.util.CalculateUtil;
 import com.hyeongpil.thinkba.util.GlobalApplication;
 import com.hyeongpil.thinkba.util.GpsInfo;
 import com.hyeongpil.thinkba.util.model.TmapPointArr;
 import com.hyeongpil.thinkba.util.model.Weather;
 import com.hyeongpil.thinkba.util.retrofit.AccidentThread;
 import com.hyeongpil.thinkba.util.retrofit.LivingThread;
+import com.hyeongpil.thinkba.util.retrofit.SharedManager;
 import com.hyeongpil.thinkba.util.retrofit.WeatherThread;
 import com.skp.Tmap.TMapCircle;
 import com.skp.Tmap.TMapData;
@@ -46,7 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends BaseNavigationActivity {//implements TMapGpsManager.onLocationChangedCallback
+public class MainActivity extends BaseNavigationActivity implements TMapGpsManager.onLocationChangedCallback{
     final static String TAG = "MainActivity";
     Context mContext;
     TMapGpsManager gps = null;
@@ -57,6 +60,7 @@ public class MainActivity extends BaseNavigationActivity {//implements TMapGpsMa
     ArrayList<TMapPoint> arr_tMapPoint;
     ArrayList<TMapCircle> arr_tMapCircle;
     TmapPointArr tmapPointArr;
+    CalculateUtil calculateUtil = new CalculateUtil();
 
     TMapView mapView = null;
     FrameLayout mapLayout;
@@ -78,8 +82,10 @@ public class MainActivity extends BaseNavigationActivity {//implements TMapGpsMa
     @Bind(R.id.main_fab_nearby) FloatingActionButton fab_nearby;
     @Bind(R.id.main_fab_settings) FloatingActionButton fab_settings;
 
-    double latitude = 36.6244636; //위도
-    double longitude = 127.4617878; // 경도
+    double latitude = 0; //위도
+    double longitude = 0; // 경도
+    double beforeLat = 0;
+    double beforeLon = 0;
     String arrive; // 도착지 좌표
 
     boolean menu_click = false;
@@ -116,23 +122,23 @@ public class MainActivity extends BaseNavigationActivity {//implements TMapGpsMa
         arr_tMapPoint = new ArrayList<TMapPoint>();
         arr_tMapCircle = new ArrayList<TMapCircle>();
         mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
+
         setAchievement();
     }
 
     private void tMapInit() {
-        // TODO: 2016. 7. 29. 주석 풀기
         startPoint = new TMapPoint(latitude,longitude);
-//        gpsInfo = new GpsInfo(MainActivity.this);
-//        if (gpsInfo.isGetLocation()) { // 현재 위치 받아오기
-//            latitude = gpsInfo.getLatitude();
-//            longitude = gpsInfo.getLongitude();
-//            startPoint = new TMapPoint(latitude, longitude);
-//        }
+        gpsInfo = new GpsInfo(MainActivity.this);
+        if (gpsInfo.isGetLocation()) { // 현재 위치 받아오기
+            latitude = gpsInfo.getLatitude();
+            longitude = gpsInfo.getLongitude();
+            startPoint = new TMapPoint(latitude, longitude);
+        }
         mapView = new TMapView(mContext); // 지도 위도, 경도, 줌레벨
         mapView.setSKPMapApiKey(getString(R.string.skplanet_key));
         mapView.setTrackingMode(m_bTrackingMode); // 트래킹 모드 사용
         mapView.setZoomLevel(16);
-//        mapView.setBicycleInfo(true);//자전거 도로 표시
+        mapView.setBicycleInfo(true);//자전거 도로 표시
         mapView.setBicycleFacilityInfo(true);//자전거 시설물 표시
         mapView.setIconVisibility(true); // 현재 위치 표시하는지 여부
         mapView.setLocationPoint(longitude, latitude); // 지도 현재 좌표 설정
@@ -159,21 +165,21 @@ public class MainActivity extends BaseNavigationActivity {//implements TMapGpsMa
         gps.setProvider(gps.NETWORK_PROVIDER);
         gps.OpenGps();
     }
-    // TODO: 2016. 7. 29. 테스트용 좌표임 주석 풀기
     /**
      * onLocationChange
      * 사용자가 이동할 때 이를 감지하여 위치값을 받는다. 트래킹모드가 활성화 되어 있다면 화면의 위치를 계속 바꿔준다.
      */
-//    @Override
-//    public void onLocationChange(Location location) {
-//        latitude = location.getLatitude();
-//        longitude = location.getLongitude();
-//        Log.d(TAG, "onLocationChange " + location.getLatitude() + " " + location.getLongitude() + " " + location.getSpeed() + " " + location.getAccuracy());
-//        tv_speed.setText(String.valueOf(location.getSpeed())+" km");
-//        if (m_bTrackingMode) {
-//            mapView.setLocationPoint(location.getLongitude(), location.getLatitude());
-//        }
-//    }
+    @Override
+    public void onLocationChange(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        calculateUtil.calDistance(latitude,longitude);
+        Log.d(TAG, "onLocationChange " + location.getLatitude() + " " + location.getLongitude() + " " + location.getSpeed() + " " + location.getAccuracy());
+        tv_speed.setText(String.valueOf(location.getSpeed())+" km");
+        if (m_bTrackingMode) {
+            mapView.setLocationPoint(location.getLongitude(), location.getLatitude());
+        }
+    }
 
     /**
      * nowClickListener

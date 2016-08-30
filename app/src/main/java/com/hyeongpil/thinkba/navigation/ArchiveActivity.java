@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 public class ArchiveActivity extends BaseGameActivity{
 
     private ArrayList<ArchiveModel> archiveList;
-    private Archive_Adapter adapter;
+    private ArchiveAdapter adapter;
 
     @Bind(R.id.archive_recycler_view)
     RecyclerView recyclerView;
@@ -48,7 +48,7 @@ public class ArchiveActivity extends BaseGameActivity{
 
     private void init(){
         archiveList = new ArrayList<>();
-        adapter = new Archive_Adapter(this,archiveList);
+        adapter = new ArchiveAdapter(this,archiveList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(mLayoutManager);

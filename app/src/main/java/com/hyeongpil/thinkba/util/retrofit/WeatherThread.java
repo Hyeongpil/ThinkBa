@@ -39,16 +39,13 @@ public class WeatherThread extends Thread {
         super.run();
         Retrofit client = new Retrofit.Builder().baseUrl("http://apis.skplanetx.com/").addConverterFactory(GsonConverterFactory.create()).build();
         WeatherRepo.AccidentApiInterface service = client.create(WeatherRepo.AccidentApiInterface.class);
-        // TODO: 2016. 7. 27. 좌표로 바꿔야함
-        Call<WeatherRepo> call = service.get_Weather_retrofit(version,String.valueOf(36.6244636),String.valueOf(127.4617878));
+        Call<WeatherRepo> call = service.get_Weather_retrofit(version,lat,lon);
         call.enqueue(new Callback<WeatherRepo>() {
             @Override
             public void onResponse(Call<WeatherRepo> call, Response<WeatherRepo> response) {
                 if(response.isSuccessful()){
                     weatherRepo = response.body();
-                    // TODO: 2016. 7. 25. 미세먼지와 자외선도 받아서 메인에 추가
                     Log.d(TAG,"response.raw :"+response.raw());
-                    Log.e(TAG,"sky :"+weatherRepo.getWeather().getHourly().get(0).getSky().getName());
                     Weather.getInstance().setTemperature(weatherRepo.getWeather().getHourly().get(0).getTemperature().getTc());
                     Weather.getInstance().setCloud(weatherRepo.getWeather().getHourly().get(0).getSky().getName());
                     Weather.getInstance().setWind_direction(weatherRepo.getWeather().getHourly().get(0).getWind().getWdir());

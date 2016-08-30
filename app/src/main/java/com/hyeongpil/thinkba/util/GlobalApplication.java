@@ -2,6 +2,7 @@ package com.hyeongpil.thinkba.util;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -21,6 +22,7 @@ public class GlobalApplication extends Application implements GoogleApiClient.Co
     private static volatile Activity currentActivity = null;
     private static volatile GlobalApplication instance = null;
     public static GoogleApiClient mGoogleApiClient;
+    SharedPreferences sp;
 
     /**
      * singleton 애플리케이션 객체를 얻는다.
@@ -41,11 +43,11 @@ public class GlobalApplication extends Application implements GoogleApiClient.Co
     public void onCreate() {
         super.onCreate();
         instance = this;
+        sp = getSharedPreferences("thinkba",MODE_PRIVATE);
 
         Typekit.getInstance()
                 .addNormal(Typekit.createFromAsset(this, "fonts/NanumGothic.ttf"))
                 .addBold(Typekit.createFromAsset(this, "fonts/NanumBarunGothicBold.ttf"));
-
 
         KakaoSDK.init(new KakaoSDKAdapter());
     }
@@ -70,7 +72,6 @@ public class GlobalApplication extends Application implements GoogleApiClient.Co
                 // add other APIs and scopes here as needed
                 .build();
         mGoogleApiClient.connect();
-        // TODO: 2016. 7. 21. 업적 달성 시 알림 띄워줘야함
     }
     /**
      * 애플리케이션 종료시 singleton 어플리케이션 객체 초기화한다.
@@ -83,8 +84,6 @@ public class GlobalApplication extends Application implements GoogleApiClient.Co
         mGoogleApiClient.disconnect(); // 구글 게임 연결 해제
     }
 
-
-
     @Override
     public void onConnected(Bundle bundle) {
         Log.e(TAG,"구글 연결");
@@ -96,11 +95,10 @@ public class GlobalApplication extends Application implements GoogleApiClient.Co
         // Attempt to reconnect
         mGoogleApiClient.connect();
     }
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(TAG,"구글 연결 실패");
     }
 
-
+    public SharedPreferences getSp() {return sp;}
 }

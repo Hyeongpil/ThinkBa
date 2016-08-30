@@ -39,11 +39,10 @@ public class LivingThread extends Thread {
     @Override
     public void run() {
         super.run();
-        // TODO: 2016. 7. 27. 좌표 받아오는것으로 바꾸기
         //미세먼지
         Retrofit client = new Retrofit.Builder().baseUrl("http://apis.skplanetx.com/").addConverterFactory(GsonConverterFactory.create()).build();
         Living_Dust_Repo.LivingApiInterface dust_service = client.create(Living_Dust_Repo.LivingApiInterface.class);
-        Call<Living_Dust_Repo> dust_call = dust_service.get_dust_retrofit(version,String.valueOf(36.6244636),String.valueOf(127.4617878));
+        Call<Living_Dust_Repo> dust_call = dust_service.get_dust_retrofit(version,lat,lon);
         dust_call.enqueue(new Callback<Living_Dust_Repo>() {
             @Override
             public void onResponse(Call<Living_Dust_Repo> call, Response<Living_Dust_Repo> response) {

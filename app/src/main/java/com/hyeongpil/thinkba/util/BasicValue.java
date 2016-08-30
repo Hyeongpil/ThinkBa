@@ -13,7 +13,7 @@ public class BasicValue {
     //싱글턴 패턴
     private static BasicValue ourInstance = new BasicValue();
 
-    GoogleApiClient mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
+    private double distance; // 주행 거리
 
     private boolean autoLogin;
     private boolean accident;
@@ -26,6 +26,9 @@ public class BasicValue {
 
     public static BasicValue getInstance(){return ourInstance;}
     private BasicValue(){}
+
+    public double getDistance() {return distance;}
+    public void setDistance(double distance) {this.distance = distance;}
 
     public boolean isAutoLogin() {return autoLogin;}
     public void setAutoLogin(boolean autoLogin) {this.autoLogin = autoLogin;}
@@ -58,23 +61,4 @@ public class BasicValue {
         skplanet_key = GlobalApplication.getInstance().getString(R.string.skplanet_key);
         return skplanet_key;
     }
-
-    //    public void achivementNoti(Context mContext, String title ,String text){
-//        int id = 1;
-//        NotificationManager notiManager = (NotificationManager)mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
-//        PendingIntent pendingIntent = PendingIntent.getActivity
-//                (mContext,0,Games.Achievements.getAchievementsIntent(mGoogleApiClient),PendingIntent.FLAG_UPDATE_CURRENT);
-//        Notification.Builder mBuilder = new Notification.Builder(mContext);
-//        mBuilder.setSmallIcon(R.drawable.archive_test);
-//        mBuilder.setTicker("띵바 업적을 달성했습니다!");
-//        mBuilder.setWhen(System.currentTimeMillis());
-//        mBuilder.setContentTitle("띵바 업적 :"+title);
-//        mBuilder.setContentText(text);
-//        mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
-//        mBuilder.setContentIntent(pendingIntent);
-//        mBuilder.setAutoCancel(true);
-//
-//        notiManager.notify(id,mBuilder.build());
-//        id += 1;
-//    }
 }

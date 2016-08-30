@@ -19,12 +19,12 @@ import java.util.List;
 /**
  * Created by hp on 2016-05-29.
  */
-public class Nearby_Adapter extends BaseAdapter {
-    final static String TAG = "Nearby_Adapter";
+public class NearbyAdapter extends BaseAdapter {
+    final static String TAG = "NearbyAdapter";
     private Context mContext;
     private List<Item> mItems;
 
-    public Nearby_Adapter(Context mContext) {
+    public NearbyAdapter(Context mContext) {
         this.mContext = mContext;
     }
 

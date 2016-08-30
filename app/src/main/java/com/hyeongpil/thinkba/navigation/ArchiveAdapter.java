@@ -18,12 +18,12 @@ import java.util.ArrayList;
 /**
  * Created by hp on 2016. 7. 19..
  */
-public class Archive_Adapter extends RecyclerView.Adapter<Archive_Adapter.ArchiveViewHolder>{
+public class ArchiveAdapter extends RecyclerView.Adapter<ArchiveAdapter.ArchiveViewHolder>{
 
     private Context mContext;
     private ArrayList<ArchiveModel> archiveList;
 
-    public Archive_Adapter(Context mContext, ArrayList<ArchiveModel> archiveList) {
+    public ArchiveAdapter(Context mContext, ArrayList<ArchiveModel> archiveList) {
         this.mContext = mContext;
         this.archiveList = archiveList;
     }

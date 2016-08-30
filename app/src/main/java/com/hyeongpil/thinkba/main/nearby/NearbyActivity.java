@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 public class NearbyActivity extends BaseActivity implements View.OnClickListener {
     final static String TAG = "NearbyActivity";
     String apiKey;
-    Nearby_Adapter nearby_adapter;
+    NearbyAdapter nearby_adapter;
     LoginActivity loginActivity;
     GoogleApiClient mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
 
@@ -82,7 +82,7 @@ public class NearbyActivity extends BaseActivity implements View.OnClickListener
         hotel_btn.setOnClickListener(this);
         food_btn.setOnClickListener(this);
         leisure_btn.setOnClickListener(this);
-        nearby_adapter = new Nearby_Adapter(NearbyActivity.this);
+        nearby_adapter = new NearbyAdapter(NearbyActivity.this);
         ((ListView)findViewById(R.id.nearby_listview)).setAdapter(nearby_adapter);
         nearby_maplayout = (LinearLayout)findViewById(R.id.nearby_mapview);
         apiKey = getString(R.string.daum_map_key);
@@ -91,14 +91,11 @@ public class NearbyActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void daumMapinit(){
-        // TODO: 2016. 7. 29. 주석 지우기
-        latitude =  36.6244636;
-        longitude = 127.4617878;
-//        gpsInfo = new GpsInfo(NearbyActivity.this);
-//        if(gpsInfo.isGetLocation()) { // 현재 위치 받아오기
-//            latitude = gpsInfo.getLatitude();
-//            longitude = gpsInfo.getLongitude();
-//        }
+        gpsInfo = new GpsInfo(NearbyActivity.this);
+        if(gpsInfo.isGetLocation()) { // 현재 위치 받아오기
+            latitude = gpsInfo.getLatitude();
+            longitude = gpsInfo.getLongitude();
+        }
         try {
             mapView = new MapView(this);
             mapView.setDaumMapApiKey(apiKey);

@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.util.BasicValue;
+import com.hyeongpil.thinkba.util.GlobalApplication;
 
 /**
  * Created by hp on 2016-06-17.
@@ -20,7 +21,6 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     final String ACCIDENT = "accident";
     final String ACCIDENT_ALARM = "accident_alarm";
     final String ROBBER = "robber";
-    SharedPreferences sp;
 
     // TODO: 2016-06-17 설정 기능 추가하기
     @Override
@@ -49,7 +49,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         //설정값을 담을 pref 선언
-        SharedPreferences pref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+        SharedPreferences pref = GlobalApplication.getInstance().getSp();
         SharedPreferences.Editor editor = pref.edit();
 
 //        if(key.equals(AUTO_LOGIN)){

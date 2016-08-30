@@ -16,6 +16,7 @@ import android.widget.EditText;
 
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.util.BaseActivity;
+import com.hyeongpil.thinkba.util.CalculateUtil;
 import com.hyeongpil.thinkba.util.ViewPageAdapter;
 import com.hyeongpil.thinkba.util.model.POI_Data;
 import com.skp.Tmap.TMapData;
@@ -37,6 +38,7 @@ public class FindRoadActivity extends BaseActivity {
     TMapData tmapdata = new TMapData();
     TMapPoint startPoint;
     String distanceStr;
+    CalculateUtil calculUtil = new CalculateUtil();
     @Bind(R.id.search) Button search;
     @Bind(R.id.goal) EditText goal;
 
@@ -61,8 +63,6 @@ public class FindRoadActivity extends BaseActivity {
 
         imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         setViewpager();
-
-
     }
     /**
      * getArriveInfo
@@ -76,7 +76,6 @@ public class FindRoadActivity extends BaseActivity {
             double latitude = Double.parseDouble(temp[1]);
             double longitude = Double.parseDouble(temp[3]);
             startPoint = new TMapPoint(latitude, longitude); // 도착지 포인트
-            Log.e(TAG,"startPoint :"+startPoint);
         } catch (Exception e) {
             Log.d(TAG, "getStartpoint null");
         }
@@ -109,20 +108,21 @@ public class FindRoadActivity extends BaseActivity {
             tmapdata.findAllPOI(strData, new TMapData.FindAllPOIListenerCallback() {
                 @Override
                 public void onFindAllPOI(ArrayList<TMapPOIItem> poiItem) {
-                    List<POI_Data> temp_itemList = new ArrayList<POI_Data>();
+                    List<POI_Data> acu_itemList = new ArrayList<POI_Data>();
+                    List<POI_Data> dis_itemList = new ArrayList<POI_Data>();
                     for (int i = 0; i < poiItem.size(); i++) {
                         TMapPOIItem  item = poiItem.get(i);
                         POI_Data poi_data = new POI_Data();
-
                         poi_data.poiname = item.getPOIName().toString();
                         poi_data.address = item.getPOIAddress().replace("null", "");
                         poi_data.point = item.getPOIPoint().toString();
                         poi_data.distance =  item.getDistance(startPoint);
-                        poi_data.distanceStr =  calDistance(item.getDistance(startPoint));
-                        temp_itemList.add(poi_data);
+                        poi_data.distanceStr = CalculateUtil.convertDistanceStr(item.getDistance(startPoint));
+                        acu_itemList.add(poi_data);
+                        dis_itemList.add(poi_data);
                     }
-                    mAccurateFragment.set_acu_itemlist(temp_itemList);
-                    mDistanceFragment.set_dis_itemList(temp_itemList);
+                    mAccurateFragment.set_acu_itemlist(acu_itemList);
+                    mDistanceFragment.set_dis_itemList(dis_itemList);
                 }
             });
             imm.hideSoftInputFromWindow(goal.getWindowToken(), 0); // 키보드 숨김
@@ -130,25 +130,6 @@ public class FindRoadActivity extends BaseActivity {
             Log.e(TAG,"검색 오류");
         }
     }
-
-    /**
-     * calDistance
-     * 거리 계산
-     * @param distance
-     */
-    private String calDistance(Double distance){
-        if(distance > 1000) { // 1km 이상
-            distanceStr = ""+distance / 1000;
-            distanceStr = distanceStr.substring(0,distanceStr.indexOf(".")+2)+"km";
-            return distanceStr;
-        }
-        else{
-            distanceStr = ""+distance;
-            distanceStr = distanceStr.substring(0,distanceStr.indexOf("."))+'m';
-            return distanceStr;
-        }
-    }
-
 
 
 }

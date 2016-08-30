@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide;
 import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.util.BaseActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
+import com.hyeongpil.thinkba.util.CalculateUtil;
+import com.hyeongpil.thinkba.util.retrofit.SharedManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -20,6 +22,9 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  * Created by hp on 2016. 7. 18.
  */
 public class MyPageActivity extends BaseActivity {
+    final static String TAG = "MyPageActivity";
+    SharedManager sharedManager = new SharedManager();
+    CalculateUtil calculateUtil = new CalculateUtil();
 
     @Bind(R.id.mypage_profile_img)
     ImageView profile_img;
@@ -50,7 +55,6 @@ public class MyPageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         container.setLayoutResource(R.layout.activity_mypage);
         containView = container.inflate();
-        setTitle("프로필");
         actionBarTitleSet("프로필", Color.BLACK);
         ButterKnife.bind(this);
 
@@ -64,6 +68,7 @@ public class MyPageActivity extends BaseActivity {
                 .error(R.drawable.default_profile)
                 .bitmapTransform(new CropCircleTransformation(Glide.get(MyPageActivity.this).getBitmapPool())).into(profile_img);
         profile_name.setText(BasicValue.getInstance().getProfile_name());
+        distance_text.setText(calculateUtil.convertDistanceStr(Double.parseDouble(sharedManager.getDistance())));
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class AccurateFragment extends Fragment {
     final static String TAG = "AccurateFragment";
-    Find_Acu_Recycler_Adapter adapter;
+    Find_Acu_RecyclerAdapter adapter;
     RecyclerView acu_recyclerView;
     List<POI_Data> mListData;
 
@@ -37,7 +37,7 @@ public class AccurateFragment extends Fragment {
 
     protected void init(){
 
-        adapter = new Find_Acu_Recycler_Adapter(getActivity(),new Find_Acu_ClickListener());
+        adapter = new Find_Acu_RecyclerAdapter(getActivity(),new Find_Acu_ClickListener());
         acu_recyclerView.setAdapter(adapter);
 
         LinearLayoutManager manager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
