@@ -32,7 +32,6 @@ import com.hyeongpil.thinkba.util.model.TmapPointArr;
 import com.hyeongpil.thinkba.util.model.Weather;
 import com.hyeongpil.thinkba.util.retrofit.AccidentThread;
 import com.hyeongpil.thinkba.util.retrofit.LivingThread;
-import com.hyeongpil.thinkba.util.retrofit.SharedManager;
 import com.hyeongpil.thinkba.util.retrofit.WeatherThread;
 import com.skp.Tmap.TMapCircle;
 import com.skp.Tmap.TMapData;
@@ -427,7 +426,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
                 dust_grade.setText(Weather.getInstance().getDust_grade());
                 if(dust < 30){
                     dust_grade.setTextColor(mContext.getResources().getColor(R.color.blue));
-                }else if(dust > 30 && dust < 60){
+                }else if(dust >= 30 && dust <= 60){
                     dust_grade.setTextColor(mContext.getResources().getColor(R.color.green));
                 }else if(dust > 60){
                     dust_grade.setTextColor(mContext.getResources().getColor(R.color.orange));
@@ -444,7 +443,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
                 uv_power.setText(Weather.getInstance().getUv());
                 if(uv < 30){
                     uv_grade.setText("좋음"); uv_grade.setTextColor(mContext.getResources().getColor(R.color.blue));
-                }else if(uv > 30 && uv < 60){
+                }else if(uv >= 30 && uv <= 60){
                     uv_grade.setText("보통"); uv_grade.setTextColor(mContext.getResources().getColor(R.color.green));
                 }else if(uv > 60){
                     uv_grade.setText("나쁨"); uv_grade.setTextColor(mContext.getResources().getColor(R.color.orange));

@@ -19,15 +19,18 @@ import retrofit2.Retrofit;
  */
 public class LivingThread extends Thread {
     final static String TAG = "LivingThread";
-    Context mContext;
-    Handler handler;
-    Living_Dust_Repo living_dust_repo;
-    Living_UV_Repo living_uv_repo;
+    private Context mContext;
+    private Handler handler;
+    private Living_Dust_Repo living_dust_repo;
+    private Living_UV_Repo living_uv_repo;
 
-    int version = 1;
-    String lat;
-    String lon;
-    String uv;
+    private int version = 1;
+    private String lat;
+    private String lon;
+    private String uv;
+
+    private boolean getDust = false;
+    private boolean getUv = false;
 
     public LivingThread(Handler handler, Context mContext, double lat, double lon) {
         this.mContext = mContext;
@@ -54,6 +57,7 @@ public class LivingThread extends Thread {
                     String dust_value = living_dust_repo.get_Dust_Weather().getDust().get(0).getPm10().getValue();
                     Weather.getInstance().setDust_grade(dust_grade);
                     Weather.getInstance().setDust_value(dust_value);
+                    getDust = true;
                     sendMsg("dust");
                 }
             }
@@ -75,7 +79,7 @@ public class LivingThread extends Thread {
                     uv = living_uv_repo.get_UV_Weather().getwIndex().getUvindex().get(0).getDay00().getIndex();
 
                     Weather.getInstance().setUv(uv);
-                    //완료됨을 알림
+                    getUv = true;
                     sendMsg("uv");
                 }
             }

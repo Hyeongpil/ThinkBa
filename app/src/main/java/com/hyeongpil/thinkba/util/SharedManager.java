@@ -1,4 +1,4 @@
-package com.hyeongpil.thinkba.util.retrofit;
+package com.hyeongpil.thinkba.util;
 
 import android.content.SharedPreferences;
 

@@ -12,7 +12,7 @@ import com.hyeongpil.thinkba.R;
 import com.hyeongpil.thinkba.util.BaseActivity;
 import com.hyeongpil.thinkba.util.BasicValue;
 import com.hyeongpil.thinkba.util.CalculateUtil;
-import com.hyeongpil.thinkba.util.retrofit.SharedManager;
+import com.hyeongpil.thinkba.util.SharedManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

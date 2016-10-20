@@ -1,9 +1,6 @@
 package com.hyeongpil.thinkba.util;
 
 import android.location.Location;
-import android.util.Log;
-
-import com.hyeongpil.thinkba.util.retrofit.SharedManager;
 
 /**
  * Created by hp on 2016-08-30.
