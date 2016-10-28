@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
@@ -50,19 +51,19 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseNavigationActivity implements TMapGpsManager.onLocationChangedCallback{
     final static String TAG = "MainActivity";
-    Context mContext;
-    TMapGpsManager gps = null;
-    GpsInfo gpsInfo;
-    TMapPoint startPoint;
-    static TMapPoint arrivePoint;
-    static TMapPoint passPoint; // 경유지
-    ArrayList<TMapPoint> arr_tMapPoint;
-    ArrayList<TMapCircle> arr_tMapCircle;
-    TmapPointArr tmapPointArr;
-    CalculateUtil calculateUtil = new CalculateUtil();
+    private Context mContext;
+    private TMapGpsManager gps = null;
+    private GpsInfo gpsInfo;
+    private TMapPoint startPoint;
+    private static TMapPoint arrivePoint;
+    private static TMapPoint passPoint; // 경유지
+    private ArrayList<TMapPoint> arr_tMapPoint;
+    private ArrayList<TMapCircle> arr_tMapCircle;
+    private TmapPointArr tmapPointArr;
+    private CalculateUtil calculateUtil = new CalculateUtil();
 
-    TMapView mapView = null;
-    FrameLayout mapLayout;
+    private TMapView mapView = null;
+    private FrameLayout mapLayout;
     @Bind(R.id.main_achieve) FrameLayout achieve_popup;
     @Bind(R.id.main_speed) TextView tv_speed;
     @Bind(R.id.main_weather_dust_grade) TextView dust_grade;
@@ -81,15 +82,16 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
     @Bind(R.id.main_fab_nearby) FloatingActionButton fab_nearby;
     @Bind(R.id.main_fab_settings) FloatingActionButton fab_settings;
 
-    double latitude = 0; //위도
-    double longitude = 0; // 경도
-    double beforeLat = 0;
-    double beforeLon = 0;
-    String arrive; // 도착지 좌표
+    private double latitude = 0; //위도
+    private double longitude = 0; // 경도
+    private double beforeLat = 0;
+    private double beforeLon = 0;
+    private String arrive; // 도착지 좌표
 
-    boolean menu_click = false;
-    private boolean m_bTrackingMode = false;
-    GoogleApiClient mGoogleApiClient;
+    private boolean menu_click = false;
+    private boolean m_bTrackingMode = true;
+    private GoogleApiClient mGoogleApiClient;
+    private Vibrator vibe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +123,7 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         arr_tMapPoint = new ArrayList<TMapPoint>();
         arr_tMapCircle = new ArrayList<TMapCircle>();
         mGoogleApiClient = GlobalApplication.getInstance().getmGoogleApiClient();
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         setAchievement();
     }
@@ -177,6 +180,16 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
         tv_speed.setText(String.valueOf(location.getSpeed())+" km");
         if (m_bTrackingMode) {
             mapView.setLocationPoint(location.getLongitude(), location.getLatitude());
+            if(tmapPointArr != null){
+                for(int i = 0; i < tmapPointArr.gettMapPointArr().size(); i++){
+                    TMapPoint tMapPoint= tmapPointArr.gettMapPointArr().get(i);
+                    if((tMapPoint.getLatitude()-0.0005000 < latitude && tMapPoint.getLatitude()+0.0005000 > latitude)
+                            && (tMapPoint.getLongitude()-0.0005000 < longitude && tMapPoint.getLongitude()+0.0005000 > longitude)){
+                        Log.e(TAG,"호출");
+                        vibe.vibrate(new long[]{0,500,200,500},-1);
+                    }
+                }
+            }
         }
     }
 
@@ -381,7 +394,6 @@ public class MainActivity extends BaseNavigationActivity implements TMapGpsManag
             Toast.makeText(MainActivity.this, "구글 게임 연동이 실패하였습니다 다시 로그인 해 주세요", Toast.LENGTH_SHORT).show();
         }}catch (NullPointerException e){}
     }
-
 
     /**
      * 사고다발 지역 데이터를 가져옴
